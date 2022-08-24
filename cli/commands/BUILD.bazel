@@ -1,0 +1,24 @@
+load("@rules_cc//cc:defs.bzl", "cc_library")
+load("//bazel:copts.bzl", "copts")
+
+package(default_visibility = ["//cli:__subpackages__"])
+
+cc_library(
+    name = "command",
+    hdrs = ["command.hh"],
+    copts = copts,
+)
+
+cc_library(
+    name = "codegen",
+    srcs = ["codegen.cc"],
+    hdrs = ["codegen.hh"],
+    copts = copts,
+    deps = [
+        ":command",
+        "//executable_path",
+        "@bazelregistry_docopt_cpp//:docopt",
+        "@boost//libs/dll",
+        "@ecsact_parse_runtime_interop",
+    ],
+)

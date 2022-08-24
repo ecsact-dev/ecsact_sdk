@@ -1,0 +1,19 @@
+load("@rules_cc//cc:defs.bzl", "cc_binary")
+load("//bazel:copts.bzl", "copts")
+
+package(default_visibility = ["//visibility:public"])
+
+cc_binary(
+    name = "ecsact",
+    srcs = ["cli.cc"],
+    copts = copts,
+    deps = [
+        "//cli/commands:codegen",
+        "//cli/commands:command",
+    ],
+)
+
+alias(
+    name = "cli",
+    actual = ":ecsact",
+)

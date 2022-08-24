@@ -1,0 +1,10 @@
+# bazel
+/bazel-*
+/user.bazelrc
+
+# https://github.com/hedronvision/bazel-compile-commands-extractor
+/compile_commands.json
+/external
+
+# clangd
+/.cache/
