@@ -18,6 +18,10 @@
 #include "executable_path/executable_path.hh"
 
 namespace fs = std::filesystem;
+constexpr auto file_readonly_perms =
+	fs::perms::others_read |
+	fs::perms::group_read |
+	fs::perms::owner_read;
 
 constexpr auto USAGE = R"(Ecsact Codegen Command
 
@@ -228,9 +232,6 @@ int ecsact::cli::detail::codegen_command(int argc, char* argv[]) {
 			output_file_path.replace_extension(
 				output_file_path.extension().string() + "." + plugin_name
 			);
-			if(file_write_stream.is_open()) {
-				file_write_stream.close();
-			}
 			if(output_paths.contains(output_file_path.string())) {
 				has_plugin_error = true;
 				std::cerr
@@ -242,8 +243,14 @@ int ecsact::cli::detail::codegen_command(int argc, char* argv[]) {
 			}
 
 			output_paths.emplace(output_file_path.string());
+			if(fs::exists(output_file_path)) {
+				fs::permissions(output_file_path, fs::perms::all);
+			}
 			file_write_stream.open(output_file_path);
 			plugin_fn(package_id, &file_write_fn);
+			file_write_stream.flush();
+			file_write_stream.close();
+			fs::permissions(output_file_path, file_readonly_perms);
 		}
 
 		plugin.unload();
