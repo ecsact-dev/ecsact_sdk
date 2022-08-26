@@ -10,6 +10,16 @@
 				"@hedron_compile_commands//:refresh_all"
 			],
 			"problemMatcher": []
+		},
+		{
+			"label": "build //cli:ecsact",
+			"command": "bazel",
+			"type": "shell",
+			"args": [
+				"build",
+				"//cli:ecsact"
+			],
+			"group": "build"
 		}
 	]
 }

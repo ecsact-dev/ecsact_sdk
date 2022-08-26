@@ -7,9 +7,13 @@
 #include <string_view>
 #include <unordered_set>
 #include <boost/dll/shared_library.hpp>
+#include <boost/dll/library_info.hpp>
 #include "docopt.h"
 #include "ecsact/parse_runtime_interop.h"
 #include "ecsact/runtime/meta.h"
+#include "ecsact/runtime/dylib.h"
+#include "ecsact/codegen_plugin.h"
+#include "ecsact/codegen/plugin_validate.hh"
 
 #include "executable_path/executable_path.hh"
 
@@ -26,7 +30,7 @@ Options:
 		Name of bundled plugin or path to plugin.
 	--stdout
 		Print to stdout instead of writing to a file. May only be used if a single
-		esact file and single ecsact codegen plugin are used.
+		ecsact file and single ecsact codegen plugin are used.
 )";
 
 static fs::path get_default_plugins_dir() {
@@ -121,6 +125,7 @@ int ecsact::cli::detail::codegen_command(int argc, char* argv[]) {
 	std::vector<fs::path> plugin_paths;
 	std::vector<boost::dll::shared_library> plugins;
 	bool plugins_not_found = false;
+	bool invalid_plugins = false;
 
 	for(auto plugin_arg : args.at("--plugin").asStringList()) {
 		std::vector<fs::path> checked_plugin_paths;
@@ -131,7 +136,18 @@ int ecsact::cli::detail::codegen_command(int argc, char* argv[]) {
 		);
 
 		if(plugin_path) {
-			plugin_paths.emplace_back(*plugin_path);
+			boost::system::error_code ec;
+			auto& plugin = plugins.emplace_back();
+			plugin.load(plugin_path->string(), ec);
+			auto validate_result = ecsact::codegen::plugin_validate(*plugin_path);
+			if(validate_result.ok()) {
+				plugin_paths.emplace_back(*plugin_path);
+			} else {
+				invalid_plugins = true;
+				plugins.pop_back();
+				std::cerr
+					<< "[ERROR] Plugin validation failed for '" << plugin_arg << "'\n";
+			}
 		} else {
 			plugins_not_found = true;
 			std::cerr
@@ -144,25 +160,7 @@ int ecsact::cli::detail::codegen_command(int argc, char* argv[]) {
 		}
 	}
 
-	bool plugin_load_failed = false;
-	plugins.reserve(plugin_paths.size());
-
-	for(auto plugin_path : plugin_paths) {
-		boost::system::error_code ec;
-		auto& plugin = plugins.emplace_back();
-		plugin.load(plugin_path.string(), ec);
-		if(ec) {
-			plugin_load_failed = true;
-			std::cerr
-				<< "[ERROR] Failed to load codegen plugin '"
-				<< plugin_path.filename().string() << "': "
-				<< ec.message()
-				<< " (" << ec.value() << ")"
-				<< "\n";
-		}
-	}
-
-	if(plugin_load_failed || plugins_not_found || files_error) {
+	if(invalid_plugins || plugins_not_found || files_error) {
 		return 1;
 	}
 
@@ -186,18 +184,47 @@ int ecsact::cli::detail::codegen_command(int argc, char* argv[]) {
 	);
 
 	std::unordered_set<std::string> output_paths;
-	bool has_conflicting_output_paths = false;
+	bool has_plugin_error = false;
 
 	for(auto& plugin : plugins) {
-		using write_fn_t = void(*)(const char*, int32_t);
-		auto& write_fn_ptr = plugin.get<write_fn_t&>("ecsact_codegen_write");
-		auto& plugin_fn = plugin.get<void(int32_t)>("ecsact_codegen_plugin");
-		auto plugin_name =
-			plugin.get<const char*()>("ecsact_codegen_plugin_name")();
+		auto plugin_fn = plugin.get<decltype(ecsact_codegen_plugin)>(
+			"ecsact_codegen_plugin"
+		);
+		auto plugin_name_fn = plugin.get<decltype(ecsact_codegen_plugin_name)>(
+			"ecsact_codegen_plugin_name"
+		);
+		std::string plugin_name = plugin_name_fn();
 
-		write_fn_ptr = &file_write_fn;
+		decltype(&ecsact_dylib_has_fn) dylib_has_fn = nullptr;
+
+		if(plugin.has("ecsact_dylib_has_fn")) {
+			dylib_has_fn = plugin.get<decltype(ecsact_dylib_has_fn)>(
+				"ecsact_dylib_has_fn"
+			);
+		}
+
+		auto dylib_set_fn_addr = plugin.get<decltype(ecsact_dylib_set_fn_addr)>(
+			"ecsact_dylib_set_fn_addr"
+		);
+
+		auto set_meta_fn_ptr = [&](const char* fn_name, auto fn_ptr) {
+			if(dylib_has_fn && !dylib_has_fn(fn_name)) return;
+			dylib_set_fn_addr(fn_name, reinterpret_cast<void(*)()>(fn_ptr));
+		};
+
+		#define CALL_SET_META_FN_PTR(fn_name, unused)\
+			set_meta_fn_ptr(#fn_name, &::fn_name)
+		FOR_EACH_ECSACT_META_API_FN(CALL_SET_META_FN_PTR);
+
 		for(auto package_id : package_ids) {
 			fs::path output_file_path = ecsact_meta_package_file_path(package_id);
+			if(output_file_path.empty()) {
+				std::cerr
+					<< "[ERROR] Could not find package source file path from "
+					<< "'ecsact_meta_package_file_path'\n";
+				continue;
+			}
+
 			output_file_path.replace_extension(
 				output_file_path.extension().string() + "." + plugin_name
 			);
@@ -205,10 +232,10 @@ int ecsact::cli::detail::codegen_command(int argc, char* argv[]) {
 				file_write_stream.close();
 			}
 			if(output_paths.contains(output_file_path.string())) {
-				has_conflicting_output_paths = true;
+				has_plugin_error = true;
 				std::cerr
 					<< "[ERROR] Plugin '"
-					<< plugin.location().filename()
+					<< plugin.location().filename().string()
 					<< "' has conflicts with another plugin output file '"
 					<< output_file_path.string() << "'\n";
 				continue;
@@ -216,12 +243,13 @@ int ecsact::cli::detail::codegen_command(int argc, char* argv[]) {
 
 			output_paths.emplace(output_file_path.string());
 			file_write_stream.open(output_file_path);
-			plugin_fn(static_cast<int32_t>(package_id));
+			plugin_fn(package_id, &file_write_fn);
 		}
-		write_fn_ptr = nullptr;
+
+		plugin.unload();
 	}
 
-	if(has_conflicting_output_paths) {
+	if(has_plugin_error) {
 		return 2;
 	}
 

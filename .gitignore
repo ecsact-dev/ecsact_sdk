@@ -8,3 +8,6 @@
 
 # clangd
 /.cache/
+
+# ecsact codegen
+*.ecsact.*

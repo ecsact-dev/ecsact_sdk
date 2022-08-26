@@ -1,0 +1,90 @@
+main package example;
+
+import example.extras;
+
+component Position {
+	f32 x;
+	f32 y;
+}
+
+component Velocity {
+	f32 vel_x;
+	f32 vel_y;
+}
+
+enum ExampleEnum {
+	NONE = 0;
+	EXAMPLE_ONE = 1;
+	EXAMPLE_TWO = 2;
+}
+
+component ExampleAll {
+	u8[12] example_static_array;
+	ExampleEnum example_enum;
+}
+
+component BoxCollision {
+	f32 width;
+	f32 height;
+}
+
+component Health {
+	f32 health;
+}
+
+component Poisonous {
+	f32 radius;
+	f32 damage;
+}
+
+component Poisoned {
+	f32 potency;
+}
+
+action Jump {
+	readonly Position;
+	readwrite Velocity;
+}
+
+system Gravity {
+	readwrite Position;
+	readwrite Velocity;
+}
+
+system Collision {
+	readonly BoxCollision;
+	readonly Position;
+	system BoxCollisiontester {
+		readonly BoxCollision;
+		readwrite Position;
+	}
+}
+
+system {
+	readonly Position;
+	readonly Poisonous;
+	system PoisonousEffectTargeter {
+		readonly Position;
+		include Health;
+		adds Poisoned;
+	}
+}
+
+system {
+	readonly Poisonous;
+	system PoisonDamageTargeter {
+		readwrite Health;
+		include Poisoned;
+	}
+}
+
+transient PoisonExpired {}
+system PoisonExpiry {
+	readonly Poisoned;
+	adds PoisonExpired;
+}
+
+system {
+	include PoisonExpired;
+	removes Poisoned;
+}

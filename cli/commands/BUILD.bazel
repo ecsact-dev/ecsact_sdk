@@ -20,5 +20,9 @@ cc_library(
         "@bazelregistry_docopt_cpp//:docopt",
         "@boost//libs/dll",
         "@ecsact_parse_runtime_interop",
+        "@ecsact_runtime//:codegen_plugin",
+        "@ecsact_runtime//:codegen_plugin_validate",
+        "@ecsact_runtime//:dylib",
+        "@ecsact_runtime//:meta",
     ],
 )

@@ -1,0 +1,26 @@
+{
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"name": "run //cli:ecsact codegen",
+			"request": "launch",
+			"program": "${workspaceFolder}/bazel-bin/cli/ecsact",
+			"cwd": "${workspaceFolder}",
+			"args": [
+				"codegen",
+				"${workspaceFolder}/examples/example.ecsact",
+				"${workspaceFolder}/examples/extras.ecsact",
+				"-p",
+				// TODO(zaucy): Removed hard coded path
+				"${workspaceFolder}/../ecsact_lang_cpp/bazel-bin/header_codegen/ecsact_cpp_header_codegen"
+			],
+			"type": "lldb",
+			"windows": {
+				"type": "cppvsdbg",
+				"program": "${workspaceFolder}/bazel-bin/cli/ecsact.exe"
+			},
+			"preLaunchTask": "build //cli:ecsact"
+		}
+	],
+	"compounds": []
+}

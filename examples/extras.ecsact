@@ -1,0 +1,5 @@
+package example.extras;
+
+component FancyExtra {
+	i32 how_fancy;
+}
