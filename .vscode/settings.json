@@ -6,5 +6,10 @@
 	"files.insertFinalNewline": true,
 	"files.eol": "\n",
 	"editor.insertSpaces": false,
-	"C_Cpp.default.compileCommands": "${workspaceFolder}/compile_commands.json"
+	"C_Cpp.default.compileCommands": "${workspaceFolder}/compile_commands.json",
+	"C_Cpp.default.includePath": [
+		"${default}",
+		"external/ecsact_runtime",
+		"external/ecsact_lang_cpp"
+	]
 }
