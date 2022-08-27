@@ -77,7 +77,6 @@ jobs:
         with:
           name: windows-x64-binaries
       - run: >
-          mv bin/ecsact-rtb.runfiles bin/ecsact-rtb.exe.runfiles &&
           zip -r ecsact_sdk_${{github.ref_name}}_windows_x64.zip bin include
       - uses: actions/upload-artifact@v3
         with:
