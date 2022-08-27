@@ -1,0 +1,41 @@
+# load(":pkg.bzl", "pkg_executable")
+# load("@rules_pkg//pkg:tar.bzl", "pkg_tar")
+load("@bzlws//:index.bzl", "bzlws_copy", "bzlws_extract")
+
+bzlws_copy(
+    name = "copy_dist_bin",
+    srcs = [
+        "//cli:ecsact",
+    ],
+    out = "dist/bin/{FILENAME}",
+    force = True,
+)
+
+bzlws_copy(
+    name = "copy_dist_include",
+    srcs = [
+        "@ecsact_runtime//:headers",
+    ],
+    out = "dist/include/{FILEPATH}",
+    force = True,
+)
+
+bzlws_copy(
+    name = "copy_dist_codegen_plugins",
+    srcs = [
+        "@ecsact_lang_cpp//cpp_header_codegen",
+        "@ecsact_lang_cpp//cpp_systems_header_codegen",
+        "@ecsact_lang_cpp//systems_header_codegen",
+    ],
+    out = "dist/share/ecsact/plugins/{FILENAME}",
+    force = True,
+)
+
+bzlws_extract(
+    name = "copy_runfiles",
+    testonly = True,
+    srcs = [":runfiles_tar"],
+    out = "dist/bin",
+    force = True,
+    tags = ["nowindows"],
+)
