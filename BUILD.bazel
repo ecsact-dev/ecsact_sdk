@@ -1,0 +1,31 @@
+load("@bzlws//:index.bzl", "bzlws_copy")
+
+bzlws_copy(
+    name = "copy_dist_bin",
+    srcs = [
+        "//cli:ecsact",
+    ],
+    out = "dist/bin/{FILENAME}",
+    force = True,
+)
+
+bzlws_copy(
+    name = "copy_dist_include",
+    srcs = [
+        "@ecsact_runtime//:headers",
+    ],
+    out = "dist/include/{FILEPATH}",
+    force = True,
+)
+
+bzlws_copy(
+    name = "copy_dist_codegen_plugins",
+    srcs = [
+        "@ecsact_lang_cpp//cpp_header_codegen",
+        "@ecsact_lang_cpp//cpp_systems_header_codegen",
+        "@ecsact_lang_cpp//systems_header_codegen",
+        "@ecsact_lang_csharp//csharp_codegen",
+    ],
+    out = "dist/share/ecsact/plugins/{FILENAME}",
+    force = True,
+)
