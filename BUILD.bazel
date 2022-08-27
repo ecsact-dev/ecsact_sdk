@@ -1,6 +1,4 @@
-# load(":pkg.bzl", "pkg_executable")
-# load("@rules_pkg//pkg:tar.bzl", "pkg_tar")
-load("@bzlws//:index.bzl", "bzlws_copy", "bzlws_extract")
+load("@bzlws//:index.bzl", "bzlws_copy")
 
 bzlws_copy(
     name = "copy_dist_bin",
@@ -29,13 +27,4 @@ bzlws_copy(
     ],
     out = "dist/share/ecsact/plugins/{FILENAME}",
     force = True,
-)
-
-bzlws_extract(
-    name = "copy_runfiles",
-    testonly = True,
-    srcs = [":runfiles_tar"],
-    out = "dist/bin",
-    force = True,
-    tags = ["nowindows"],
 )
