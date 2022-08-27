@@ -48,6 +48,13 @@ http_archive(
     url = "https://github.com/ecsact-dev/ecsact_lang_cpp/archive/bb88f875b3300f795ce72feab1b30109af9bbc64.zip",
 )
 
+http_archive(
+    name = "ecsact_lang_csharp",
+    sha256 = "abaec7f347a4bb02017df4e85a9a2f74f54c2397fbc1f2277622d9517ff8c371",
+    strip_prefix = "ecsact_lang_csharp-8dc906f95836e1ea90b3644dae6e2890c10237b8",
+    url = "https://github.com/ecsact-dev/ecsact_lang_csharp/archive/8dc906f95836e1ea90b3644dae6e2890c10237b8.zip",
+)
+
 load("@ecsact_parse//:repositories.bzl", "ecsact_parse_dependencies")
 
 ecsact_parse_dependencies()
