@@ -12,12 +12,24 @@ jobs:
     steps:
       - uses: softprops/action-gh-release@v1
 
+  common-dist:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cache/bazelisk
+            ~/.cache/bazel-disk-cache
+          key: ${{runner.os}}-bazel-cache
+      - uses: actions/checkout@v3
+      - run: bazel run --config=ci //:copy_dist_include
+      - uses: actions/upload-artifact@v3
+        with:
+          name: common-dist
+          path: dist
   windows-x64-binaries:
     runs-on: windows-latest
     steps:
-      - name: Get Home Directory
-        id: get_home_dir
-        run: echo "::set-output name=dir::$HOME"
       - uses: actions/cache@v3
         with:
           path: |
@@ -51,12 +63,16 @@ jobs:
   linux-x64-archive:
     runs-on: ubuntu-latest
     needs:
+      - common-dist
       - linux-x64-binaries
     steps:
       - uses: actions/download-artifact@v3
         with:
+          name: common-dist
+      - uses: actions/download-artifact@v3
+        with:
           name: linux-x64-binaries
-      - run: tar -czf ecsact_sdk_${{github.ref_name}}_linux_x64.tar.gz bin include
+      - run: tar -czf ecsact_sdk_${{github.ref_name}}_linux_x64.tar.gz bin include share
       - uses: actions/upload-artifact@v3
         with:
           name: linux-x64-archive
@@ -65,13 +81,17 @@ jobs:
   windows-x64-archive:
     runs-on: ubuntu-latest
     needs:
+      - common-dist
       - windows-x64-binaries
     steps:
       - uses: actions/download-artifact@v3
         with:
+          name: common-dist
+      - uses: actions/download-artifact@v3
+        with:
           name: windows-x64-binaries
       - run: >
-          zip -r ecsact_sdk_${{github.ref_name}}_windows_x64.zip bin include
+          zip -r ecsact_sdk_${{github.ref_name}}_windows_x64.zip bin include share
       - uses: actions/upload-artifact@v3
         with:
           name: windows-x64-archive
