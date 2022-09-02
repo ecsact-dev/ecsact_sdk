@@ -13,4 +13,4 @@ find dist -type f
 echo
 
 [ ! -d "dist/include/ecsact" ] && echo "Missing ecsact include directory" && exit 1
-[ ! -f "dist/include/bin/ecsact" ] && echo "Missing ecsact CLI" && exit 1
+[ ! -f "dist/bin/ecsact" ] && echo "Missing ecsact CLI" && exit 1
