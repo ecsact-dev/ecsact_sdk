@@ -32,6 +32,3 @@ jobs:
           key: ${{runner.os}}-bazel-cache
       - uses: actions/checkout@v3
       - run: ./CheckDist.sh
-      - run: bazel run --config=ci //:copy_dist_bin
-      - run: bazel run --config=ci //:copy_dist_include
-      - run: bazel run --config=ci //:copy_dist_codegen_plugins
