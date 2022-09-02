@@ -16,6 +16,7 @@ bzlws_copy(
     ],
     out = "dist/include/{FILEPATH}",
     force = True,
+    strip_filepath_prefix = "external/ecsact_runtime",
 )
 
 bzlws_copy(

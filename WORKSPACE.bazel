@@ -68,9 +68,9 @@ http_archive(
 
 http_archive(
     name = "bzlws",
-    sha256 = "9f52b3f339fb42e5a663b379eda56723fafb27c0fb3113152ee3a9229b059080",
-    strip_prefix = "bzlws-4042efa29a0359cf13f1b64e0bcd560c2d1dc4c2",
-    url = "https://github.com/zaucy/bzlws/archive/4042efa29a0359cf13f1b64e0bcd560c2d1dc4c2.zip",
+    sha256 = "93e6cec29581070fe4455a2ad6c81d4b7ee8ca1b76c2c340883100ef2686c8c7",
+    strip_prefix = "bzlws-b12ad162a63fc368785a217cd62c7afb0c9107f8",
+    url = "https://github.com/zaucy/bzlws/archive/b12ad162a63fc368785a217cd62c7afb0c9107f8.zip",
 )
 
 load("@bzlws//:repo.bzl", "bzlws_deps")
