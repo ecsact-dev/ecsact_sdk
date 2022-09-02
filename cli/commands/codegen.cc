@@ -41,7 +41,7 @@ static fs::path get_default_plugins_dir() {
 	using executable_path::executable_path;
 
 	return fs::weakly_canonical(
-		executable_path() / ".." / "share" / "ecsact" / "plugins"
+		executable_path().parent_path() / ".." / "share" / "ecsact" / "plugins"
 	);
 }
 
