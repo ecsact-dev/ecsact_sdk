@@ -2,7 +2,7 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
-			"name": "run //cli:ecsact codegen",
+			"name": "run //cli:ecsact codegen (all plugins)",
 			"request": "launch",
 			"program": "${workspaceFolder}/bazel-bin/cli/ecsact",
 			"cwd": "${workspaceFolder}",
@@ -10,18 +10,18 @@
 				"codegen",
 				"${workspaceFolder}/examples/example.ecsact",
 				"${workspaceFolder}/examples/extras.ecsact",
-				// TODO(zaucy): Removed hard coded path
-				"--plugin=${workspaceFolder}/../ecsact_lang_cpp/bazel-bin/cpp_header_codegen/ecsact_cpp_header_codegen",
-				"--plugin=${workspaceFolder}/../ecsact_lang_cpp/bazel-bin/systems_header_codegen/ecsact_systems_header_codegen",
-				"--plugin=${workspaceFolder}/../ecsact_lang_cpp/bazel-bin/cpp_systems_header_codegen/ecsact_cpp_systems_header_codegen",
-				"--plugin=${workspaceFolder}/../ecsact_lang_csharp/bazel-bin/csharp_codegen/ecsact_csharp_codegen"
+				"--plugin=${workspaceFolder}/bazel-bin/external/ecsact_lang_cpp/cpp_header_codegen/ecsact_cpp_header_codegen",
+				"--plugin=${workspaceFolder}/bazel-bin/external/ecsact_lang_cpp/systems_header_codegen/ecsact_systems_header_codegen",
+				"--plugin=${workspaceFolder}/bazel-bin/external/ecsact_lang_cpp/cpp_systems_header_codegen/ecsact_cpp_systems_header_codegen",
+				"--plugin=${workspaceFolder}/bazel-bin/external/ecsact_lang_cpp/cpp_meta_header_codegen/ecsact_cpp_meta_header_codegen",
+				"--plugin=${workspaceFolder}/bazel-bin/external/ecsact_lang_csharp/csharp_codegen/ecsact_csharp_codegen"
 			],
 			"type": "lldb",
 			"windows": {
 				"type": "cppvsdbg",
 				"program": "${workspaceFolder}/bazel-bin/cli/ecsact.exe"
 			},
-			// "preLaunchTask": "build //cli:ecsact"
+			"preLaunchTask": "build //..."
 		}
 	],
 	"compounds": []
