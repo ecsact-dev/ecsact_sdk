@@ -11,9 +11,9 @@ http_archive(
 
 http_archive(
     name = "boost",
-    sha256 = "c41441a6e9f8038ad626e9f937ddc3675ab896b6c3512eefc6840037b3816d03",
-    strip_prefix = "boost-563e8e0de4eac4b48a02d296581dc2454127608e",
-    urls = ["https://github.com/bazelboost/boost/archive/563e8e0de4eac4b48a02d296581dc2454127608e.zip"],
+    sha256 = "4a79c389add7e3d54d0e12c83098d471d24536ba2d6b8593d3a95f151f25eebb",
+    strip_prefix = "boost-da62319c330d81ef032517cbe13b6f35d97387cb",
+    urls = ["https://github.com/bazelboost/boost/archive/da62319c330d81ef032517cbe13b6f35d97387cb.zip"],
 )
 
 load("@boost//:index.bzl", "boost_http_archives")
