@@ -12,12 +12,12 @@
 			"problemMatcher": []
 		},
 		{
-			"label": "build //cli:ecsact",
+			"label": "build //...",
 			"command": "bazel",
 			"type": "shell",
 			"args": [
 				"build",
-				"//cli:ecsact"
+				"//..."
 			],
 			"group": "build"
 		}
