@@ -72,6 +72,8 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: linux-x64-binaries
+      # https://github.com/actions/upload-artifact#permission-loss
+      - run: chmod +x bin/ecsact
       - run: tar -czf ecsact_sdk_${{github.ref_name}}_linux_x64.tar.gz bin include share
       - uses: actions/upload-artifact@v3
         with:
