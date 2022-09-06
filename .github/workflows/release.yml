@@ -54,6 +54,8 @@ jobs:
           key: ${{runner.os}}-bazel-cache
       - uses: actions/checkout@v3
       - run: bazel run --config=ci //:copy_dist_bin
+      # TODO(zaucy): Figure out where executable permissions are going
+      - run: chmod +x dist/bin/ecsact
       - run: bazel run --config=ci //:copy_dist_codegen_plugins
       - uses: actions/upload-artifact@v3
         with:
