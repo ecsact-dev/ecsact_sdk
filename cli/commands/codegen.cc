@@ -36,6 +36,8 @@ Options:
 		Print to stdout instead of writing to a file. May only be used if a single
 		ecsact file and single ecsact codegen plugin are used.
 	-o, --outdir=<directory>
+		Specify directory generated files should be written to. By default generated
+		files are written next to source files.
 )";
 
 static fs::path get_default_plugins_dir() {
