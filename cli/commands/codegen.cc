@@ -27,7 +27,7 @@ constexpr auto USAGE = R"(Ecsact Codegen Command
 
 Usage:
 	ecsact codegen <files> --plugin=<plugin> [--stdout]
-	ecsact codegen <files>... --plugin=<plugin>...
+	ecsact codegen <files>... --plugin=<plugin>... [--outdir=<directory>]
 
 Options:
 	-p, --plugin=<plugin>
@@ -35,6 +35,9 @@ Options:
 	--stdout
 		Print to stdout instead of writing to a file. May only be used if a single
 		ecsact file and single ecsact codegen plugin are used.
+	-o, --outdir=<directory>
+		Specify directory generated files should be written to. By default generated
+		files are written next to source files.
 )";
 
 static fs::path get_default_plugins_dir() {
@@ -220,6 +223,21 @@ int ecsact::cli::detail::codegen_command(int argc, char* argv[]) {
 			set_meta_fn_ptr(#fn_name, &::fn_name)
 		FOR_EACH_ECSACT_META_API_FN(CALL_SET_META_FN_PTR);
 
+		std::optional<fs::path> outdir;
+		if(args.at("--outdir").isString()) {
+			outdir = fs::path(args.at("--outdir").asString());
+			if(!fs::exists(*outdir)) {
+				std::error_code ec;
+				fs::create_directories(*outdir, ec);
+				if(ec) {
+					std::cerr
+						<< "[ERROR] Failed to create out directory "
+						<< outdir->string() << ": " << ec.message() << "\n";
+					return 3;
+				}
+			}
+		}
+
 		for(auto package_id : package_ids) {
 			fs::path output_file_path = ecsact_meta_package_file_path(package_id);
 			if(output_file_path.empty()) {
@@ -232,6 +250,11 @@ int ecsact::cli::detail::codegen_command(int argc, char* argv[]) {
 			output_file_path.replace_extension(
 				output_file_path.extension().string() + "." + plugin_name
 			);
+
+			if(outdir) {
+				output_file_path = *outdir / output_file_path.filename();
+			}
+
 			if(output_paths.contains(output_file_path.string())) {
 				has_plugin_error = true;
 				std::cerr
