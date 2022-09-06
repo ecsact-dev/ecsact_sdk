@@ -28,6 +28,6 @@ bzlws_copy(
         "@ecsact_lang_cpp//systems_header_codegen",
         "@ecsact_lang_csharp//csharp_codegen",
     ],
-    out = "dist/share/ecsact/plugins/{FILENAME}",
+    out = "dist/share/ecsact/plugins/{BAZEL_LABEL_NAME}.{EXTNAME}",
     force = True,
 )
