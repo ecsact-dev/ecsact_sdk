@@ -43,9 +43,9 @@ http_archive(
 
 http_archive(
     name = "ecsact_lang_cpp",
-    sha256 = "80c733d6d276473dfd94c6359c5f0e6232004c805240fe85fc176e6c84fcbd59",
-    strip_prefix = "ecsact_lang_cpp-95a2ffd200bdfa5ab5ab9a335623e5940dbf5be5",
-    url = "https://github.com/ecsact-dev/ecsact_lang_cpp/archive/95a2ffd200bdfa5ab5ab9a335623e5940dbf5be5.zip",
+    sha256 = "278faa05ffb79d5caf886377e9b36456a7f1ed76efc99a7de2b15be33e99a5f2",
+    strip_prefix = "ecsact_lang_cpp-cb066a0917a42b076fb7441df564b9dbfebe4a4e",
+    url = "https://github.com/ecsact-dev/ecsact_lang_cpp/archive/cb066a0917a42b076fb7441df564b9dbfebe4a4e.zip",
 )
 
 http_archive(
