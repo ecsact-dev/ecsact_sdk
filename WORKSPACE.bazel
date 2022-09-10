@@ -61,9 +61,9 @@ ecsact_parse_dependencies()
 
 http_archive(
     name = "com_google_googletest",
-    sha256 = "8b89b69d24a74085d53d72e92fd5d5dc64167a8d8c3b73ec104040bf2786f847",
-    strip_prefix = "googletest-0f6885405c980d5479d6177f7223d4bc7bacca6b",
-    url = "https://github.com/google/googletest/archive/0f6885405c980d5479d6177f7223d4bc7bacca6b.zip",
+    sha256 = "669b52ce29b510b1d96d15e3d5aeeca14cc9adb6306986290cb047d8fafa3174",
+    strip_prefix = "googletest-c29315dda476f195298ab8da180e564478649b9e",
+    url = "https://github.com/google/googletest/archive/c29315dda476f195298ab8da180e564478649b9e.zip",
 )
 
 http_archive(
