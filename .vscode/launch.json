@@ -16,7 +16,7 @@
 				"--plugin=${workspaceFolder}/bazel-bin/external/ecsact_lang_cpp/cpp_meta_header_codegen/ecsact_cpp_meta_header_codegen",
 				"--plugin=${workspaceFolder}/bazel-bin/external/ecsact_lang_csharp/csharp_codegen/ecsact_csharp_codegen"
 			],
-			"type": "lldb",
+			"type": "cppdbg",
 			"windows": {
 				"type": "cppvsdbg",
 				"program": "${workspaceFolder}/bazel-bin/cli/ecsact.exe"

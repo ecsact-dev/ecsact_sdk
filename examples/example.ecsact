@@ -46,6 +46,21 @@ action Jump {
 	readwrite Velocity;
 }
 
+component Attacking {
+	entity target;
+}
+
+action Attack {
+	entity target;
+	adds Attacking;
+}
+
+system AttackDamage {
+	readonly Attacking with target {
+		readwrite Health;
+	}
+}
+
 system Gravity {
 	readwrite Position;
 	readwrite Velocity;
@@ -57,6 +72,19 @@ system Collision {
 	system BoxCollisiontester {
 		readonly BoxCollision;
 		readwrite Position;
+	}
+}
+
+system PoisonCloudSpawner {
+	generates {
+		required Position;
+		required Poisonous;
+	}
+
+	generates {
+		required Position;
+		required Poisonous;
+		optional Health;
 	}
 }
 
