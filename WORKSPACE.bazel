@@ -22,9 +22,9 @@ boost_http_archives()
 
 http_archive(
     name = "ecsact_parse",
-    sha256 = "1295694a22847ab78b00f156b2dec643e02481061d520d31c3925c2c6999f265",
-    strip_prefix = "ecsact_parse-b80cd036b8d837aabc2545e70c61831c3212675a",
-    url = "https://github.com/ecsact-dev/ecsact_parse/archive/b80cd036b8d837aabc2545e70c61831c3212675a.zip",
+    sha256 = "e75458acc83327d3d7c677e79cb8f69521ecf4bde3ed30589788d4e039ae2a1f",
+    strip_prefix = "ecsact_parse-f90dc260554f4e6fca2894198273444d7e992a5b",
+    url = "https://github.com/ecsact-dev/ecsact_parse/archive/f90dc260554f4e6fca2894198273444d7e992a5b.zip",
 )
 
 http_archive(
