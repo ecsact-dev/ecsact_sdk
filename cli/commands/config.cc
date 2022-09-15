@@ -88,11 +88,9 @@ int ecsact::cli::detail::config_command(int argc, char* argv[]) {
 				const auto prefix = "ecsact_"s;
 				const auto suffix = "_codegen"s;
 				if(filename.starts_with(prefix) && filename.ends_with(suffix)) {
-					builtin_plugins.push_back(
-						filename.substr(
-							prefix.size(),
-							filename.size() - prefix.size() - suffix.size()
-						)
+					builtin_plugins.emplace_back() = filename.substr(
+						prefix.size(),
+						filename.size() - prefix.size() - suffix.size()
 					);
 				}
 			}
