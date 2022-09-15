@@ -10,6 +10,7 @@ cc_binary(
     deps = [
         "//cli/commands:codegen",
         "//cli/commands:command",
+        "//cli/commands:config",
     ],
 )
 
