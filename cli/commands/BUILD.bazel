@@ -26,3 +26,15 @@ cc_library(
         "@ecsact_runtime//:meta",
     ],
 )
+
+cc_library(
+    name = "config",
+    srcs = ["config.cc"],
+    hdrs = ["config.hh"],
+    copts = copts,
+    deps = [
+        ":command",
+        "//executable_path",
+        "@bazelregistry_docopt_cpp//:docopt",
+    ],
+)

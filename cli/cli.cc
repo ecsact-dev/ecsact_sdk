@@ -5,6 +5,7 @@
 
 #include "./commands/command.hh"
 #include "./commands/codegen.hh"
+#include "./commands/config.hh"
 
 namespace fs = std::filesystem;
 
@@ -24,6 +25,7 @@ int main(int argc, char* argv[]) {
 
 	const std::unordered_map<std::string, command_fn_t> commands{
 		{"codegen", &ecsact::cli::detail::codegen_command},
+		{"config", &ecsact::cli::detail::config_command},
 	};
 
 	for(int i=1; argc > i; ++i) {
