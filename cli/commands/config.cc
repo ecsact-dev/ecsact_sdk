@@ -82,16 +82,27 @@ int ecsact::cli::detail::config_command(int argc, char* argv[]) {
 	if(args.at("--builtin_plugins").asBool()) {
 		if(fs::exists(plugin_dir)) {
 			auto& builtin_plugins_str = output["builtin_plugins"];
+			std::vector<std::string> builtin_plugins;
 			for(auto& entry : fs::directory_iterator(plugin_dir)) {
 				auto filename = entry.path().filename().replace_extension("").string();
 				const auto prefix = "ecsact_"s;
 				const auto suffix = "_codegen"s;
 				if(filename.starts_with(prefix) && filename.ends_with(suffix)) {
-					builtin_plugins_str += filename.substr(
-						prefix.size(),
-						filename.size() - prefix.size() - suffix.size()
-					) + "\n";
+					builtin_plugins.push_back(
+						filename.substr(
+							prefix.size(),
+							filename.size() - prefix.size() - suffix.size()
+						)
+					);
 				}
+			}
+
+			if(!builtin_plugins.empty()) {
+				auto& builtin_plugins_str = output["builtin_plugins"];
+				for(auto i=0; builtin_plugins.size() - 1 > i; ++i) {
+					builtin_plugins_str += builtin_plugins[i] + "\n";
+				}
+				builtin_plugins_str += builtin_plugins.back();
 			}
 		} else {
 			std::cerr << CANNOT_FIND_PLUGIN_DIR;
