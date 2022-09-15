@@ -5,6 +5,7 @@
 #include <map>
 #include <string>
 #include "docopt.h"
+#include "nlohmann/json.hpp"
 
 #include "executable_path/executable_path.hh"
 
@@ -13,7 +14,7 @@ namespace fs = std::filesystem;
 constexpr auto USAGE = R"(Ecsact Config Command
 
 Usage:
-	ecsact config [--include_dir] [--plugin_dir] [--builtin_plugins]
+	ecsact config [<keys>...]
 
 Options:
 	--include_dir
@@ -56,68 +57,88 @@ int ecsact::cli::detail::config_command(int argc, char* argv[]) {
 
 	auto install_prefix = exec_path.parent_path().parent_path();
 	auto plugin_dir = install_prefix / "share" / "ecsact" / "plugins";
-	std::map<std::string, std::string> output;
+	nlohmann::json output = "{}"_json;
 
-	if(args.at("--include_dir").asBool()) {
-		auto includedir = install_prefix / "include";
-		auto core_hdr = includedir / "ecsact" / "runtime" / "core.h";
+	std::unordered_map<std::string, std::function<int()>> key_handlers{
+		{"include_dir", [&] {
+			auto includedir = install_prefix / "include";
+			auto core_hdr = includedir / "ecsact" / "runtime" / "core.h";
 
-		if(fs::exists(core_hdr)) {
-			output["include_dir"] = includedir.string();
-		} else {
-			std::cerr << CANNOT_FIND_INCLUDE_DIR;
-			return 1;
-		}
-	}
-
-	if(args.at("--plugin_dir").asBool()) {
-		if(fs::exists(plugin_dir)) {
-			output["plugin_dir"] = plugin_dir.string();
-		} else {
-			std::cerr << CANNOT_FIND_PLUGIN_DIR;
-			return 1;
-		}
-	}
-
-	if(args.at("--builtin_plugins").asBool()) {
-		if(fs::exists(plugin_dir)) {
-			auto& builtin_plugins_str = output["builtin_plugins"];
-			std::vector<std::string> builtin_plugins;
-			for(auto& entry : fs::directory_iterator(plugin_dir)) {
-				auto filename = entry.path().filename().replace_extension("").string();
-				const auto prefix = "ecsact_"s;
-				const auto suffix = "_codegen"s;
-				if(filename.starts_with(prefix) && filename.ends_with(suffix)) {
-					builtin_plugins.emplace_back() = filename.substr(
-						prefix.size(),
-						filename.size() - prefix.size() - suffix.size()
-					);
-				}
+			if(fs::exists(core_hdr)) {
+				output["include_dir"] = includedir.string();
+			} else {
+				std::cerr << CANNOT_FIND_INCLUDE_DIR;
+				return 1;
 			}
 
-			if(!builtin_plugins.empty()) {
+			return 0;
+		}},
+		{"plugin_dir", [&] {
+			if(fs::exists(plugin_dir)) {
+				output["plugin_dir"] = plugin_dir.string();
+			} else {
+				std::cerr << CANNOT_FIND_PLUGIN_DIR;
+				return 1;
+			}
+
+			return 0;
+		}},
+		{"builtin_plugins", [&] {
+			if(fs::exists(plugin_dir)) {
 				auto& builtin_plugins_str = output["builtin_plugins"];
-				for(auto i=0; builtin_plugins.size() - 1 > i; ++i) {
-					builtin_plugins_str += builtin_plugins[i] + "\n";
+				std::vector<std::string> builtin_plugins;
+				for(auto& entry : fs::directory_iterator(plugin_dir)) {
+					auto filename = entry.path().filename().replace_extension("").string();
+					const auto prefix = "ecsact_"s;
+					const auto suffix = "_codegen"s;
+					if(filename.starts_with(prefix) && filename.ends_with(suffix)) {
+						builtin_plugins.emplace_back() = filename.substr(
+							prefix.size(),
+							filename.size() - prefix.size() - suffix.size()
+						);
+					}
 				}
-				builtin_plugins_str += builtin_plugins.back();
-			}
-		} else {
-			std::cerr << CANNOT_FIND_PLUGIN_DIR;
-			return 1;
-		}
-	}
 
-	if(output.empty()) {
-		return 1;
+				output["builtin_plugins"] = builtin_plugins;
+			} else {
+				std::cerr << CANNOT_FIND_PLUGIN_DIR;
+				return 1;
+			}
+
+			return 0;
+		}},
+	};
+
+	auto keys = args.at("<keys>").asStringList();
+	if(keys.empty()) {
+		for(auto&& [_, key_handler] : key_handlers) {
+			int exit_code = key_handler();
+			if(exit_code != 0) {
+				return exit_code;
+			}
+		}
+	} else {
+		for(auto key : keys) {
+			int exit_code = key_handlers.at(key)();
+			if(exit_code != 0) {
+				return exit_code;
+			}
+		}
 	}
 
 	if(output.size() == 1) {
-		std::cout << output.begin()->second << "\n";
-	} else {
-		for(auto&& [key, value] : output) {
-			std::cout << key << ": " << value << "\n";
+		auto& value = output.begin().value();
+		if(value.is_array()) {
+			for(auto& element : value) {
+				std::cout << element.get<std::string>() << "\n";
+			}
+		} else if(value.is_string()) {
+			std::cout << value.get<std::string>();
+		} else {
+			std::cout << value;
 		}
+	} else {
+		std::cout << output.dump();
 	}
 
 	return 0;

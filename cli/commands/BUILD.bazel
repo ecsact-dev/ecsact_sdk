@@ -36,5 +36,6 @@ cc_library(
         ":command",
         "//executable_path",
         "@bazelregistry_docopt_cpp//:docopt",
+        "@nlohmann_json//:json",
     ],
 )
