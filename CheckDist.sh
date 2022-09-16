@@ -2,10 +2,10 @@
 
 set -e
 
-bazel build --config=ci //:copy_dist_bin //:copy_dist_include //:copy_dist_codegen_plugins
+bazel build --config=ci //:copy_runfiles //:copy_dist_bin //:copy_dist_include //:copy_dist_codegen_plugins
 
-bazel run --config=ci //:copy_dist_bin
 bazel run --config=ci //:copy_runfiles
+bazel run --config=ci //:copy_dist_bin
 bazel run --config=ci //:copy_dist_include
 bazel run --config=ci //:copy_dist_codegen_plugins
 
