@@ -40,6 +40,19 @@ load("@boost//:index.bzl", "boost_http_archives")
 boost_http_archives()
 
 http_archive(
+    name = "rules_pkg",
+    sha256 = "8a298e832762eda1830597d64fe7db58178aa84cd5926d76d5b744d6558941c2",
+    urls = [
+        "https://mirror.bazel.build/github.com/bazelbuild/rules_pkg/releases/download/0.7.0/rules_pkg-0.7.0.tar.gz",
+        "https://github.com/bazelbuild/rules_pkg/releases/download/0.7.0/rules_pkg-0.7.0.tar.gz",
+    ],
+)
+
+load("@rules_pkg//:deps.bzl", "rules_pkg_dependencies")
+
+rules_pkg_dependencies()
+
+http_archive(
     name = "ecsact_rtb",
     sha256 = "46e38a4f1714bfce34eedd0a013486813dab2aa097e4f5afabfd3e1e9c140880",
     strip_prefix = "ecsact_rtb-6a9d4f8c1f4355d9cab7e7c17d842c1225d45bcc",
