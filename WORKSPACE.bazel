@@ -40,6 +40,13 @@ load("@boost//:index.bzl", "boost_http_archives")
 boost_http_archives()
 
 http_archive(
+    name = "ecsact_rtb",
+    sha256 = "46e38a4f1714bfce34eedd0a013486813dab2aa097e4f5afabfd3e1e9c140880",
+    strip_prefix = "ecsact_rtb-6a9d4f8c1f4355d9cab7e7c17d842c1225d45bcc",
+    url = "https://github.com/ecsact-dev/ecsact_rtb/archive/6a9d4f8c1f4355d9cab7e7c17d842c1225d45bcc.zip",
+)
+
+http_archive(
     name = "ecsact_parse",
     sha256 = "e75458acc83327d3d7c677e79cb8f69521ecf4bde3ed30589788d4e039ae2a1f",
     strip_prefix = "ecsact_parse-f90dc260554f4e6fca2894198273444d7e992a5b",
@@ -77,6 +84,10 @@ http_archive(
 load("@ecsact_parse//:repositories.bzl", "ecsact_parse_dependencies")
 
 ecsact_parse_dependencies()
+
+load("@ecsact_rtb//:repositories.bzl", "ecsact_rtb_repositories")
+
+ecsact_rtb_repositories()
 
 http_archive(
     name = "com_google_googletest",

@@ -4,6 +4,7 @@ bzlws_copy(
     name = "copy_dist_bin",
     srcs = [
         "//cli:ecsact",
+        "@ecsact_rtb//cli:ecsact_rtb",
     ],
     out = "dist/bin/{FILENAME}",
     force = True,
