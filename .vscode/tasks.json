@@ -20,6 +20,18 @@
 				"//..."
 			],
 			"group": "build"
+		},
+		{
+			"label": "copy dist plugins",
+			"command": "bazel",
+			"type": "shell",
+			"args": [
+				"run",
+				"//:copy_dist_codegen_plugins"
+			],
+			"dependsOn": [
+				"build //..."
+			]
 		}
-	]
+	],
 }

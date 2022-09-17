@@ -26,7 +26,7 @@ constexpr auto file_readonly_perms =
 constexpr auto USAGE = R"(Ecsact Codegen Command
 
 Usage:
-	ecsact codegen <files> --plugin=<plugin> [--stdout]
+	ecsact codegen <files>... --plugin=<plugin> [--stdout]
 	ecsact codegen <files>... --plugin=<plugin>... [--outdir=<directory>]
 
 Options:
@@ -238,42 +238,47 @@ int ecsact::cli::detail::codegen_command(int argc, char* argv[]) {
 			}
 		}
 
-		for(auto package_id : package_ids) {
-			fs::path output_file_path = ecsact_meta_package_file_path(package_id);
-			if(output_file_path.empty()) {
-				std::cerr
-					<< "[ERROR] Could not find package source file path from "
-					<< "'ecsact_meta_package_file_path'\n";
-				continue;
-			}
+		if(args.at("--stdout").asBool()) {
+			plugin_fn(*package_ids.begin(), &stdout_write_fn);
+			std::cout.flush();
+		} else {
+			for(auto package_id : package_ids) {
+				fs::path output_file_path = ecsact_meta_package_file_path(package_id);
+				if(output_file_path.empty()) {
+					std::cerr
+						<< "[ERROR] Could not find package source file path from "
+						<< "'ecsact_meta_package_file_path'\n";
+					continue;
+				}
 
-			output_file_path.replace_extension(
-				output_file_path.extension().string() + "." + plugin_name
-			);
+				output_file_path.replace_extension(
+					output_file_path.extension().string() + "." + plugin_name
+				);
 
-			if(outdir) {
-				output_file_path = *outdir / output_file_path.filename();
-			}
+				if(outdir) {
+					output_file_path = *outdir / output_file_path.filename();
+				}
 
-			if(output_paths.contains(output_file_path.string())) {
-				has_plugin_error = true;
-				std::cerr
-					<< "[ERROR] Plugin '"
-					<< plugin.location().filename().string()
-					<< "' has conflicts with another plugin output file '"
-					<< output_file_path.string() << "'\n";
-				continue;
-			}
+				if(output_paths.contains(output_file_path.string())) {
+					has_plugin_error = true;
+					std::cerr
+						<< "[ERROR] Plugin '"
+						<< plugin.location().filename().string()
+						<< "' has conflicts with another plugin output file '"
+						<< output_file_path.string() << "'\n";
+					continue;
+				}
 
-			output_paths.emplace(output_file_path.string());
-			if(fs::exists(output_file_path)) {
-				fs::permissions(output_file_path, fs::perms::all);
+				output_paths.emplace(output_file_path.string());
+				if(fs::exists(output_file_path)) {
+					fs::permissions(output_file_path, fs::perms::all);
+				}
+				file_write_stream.open(output_file_path);
+				plugin_fn(package_id, &file_write_fn);
+				file_write_stream.flush();
+				file_write_stream.close();
+				fs::permissions(output_file_path, file_readonly_perms);
 			}
-			file_write_stream.open(output_file_path);
-			plugin_fn(package_id, &file_write_fn);
-			file_write_stream.flush();
-			file_write_stream.close();
-			fs::permissions(output_file_path, file_readonly_perms);
 		}
 
 		plugin.unload();

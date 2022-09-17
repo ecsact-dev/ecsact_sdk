@@ -1,5 +1,20 @@
 {
 	"version": "0.2.0",
+	"inputs": [
+		{
+			"id": "plugin_name",
+			"type": "pickString",
+			"description": "Plugin name",
+			"options": [
+				"cpp_header",
+				"cpp_meta_header",
+				"cpp_systems_header",
+				"csharp",
+				"json",
+				"systems_header"
+			]
+		}
+	],
 	"configurations": [
 		{
 			"name": "run //cli:ecsact codegen (all plugins)",
@@ -23,6 +38,28 @@
 				"program": "${workspaceFolder}/bazel-bin/cli/ecsact.exe"
 			},
 			"preLaunchTask": "build //..."
+		},
+		{
+			"name": "run //cli:ecsact codegen (stdout)",
+			"request": "launch",
+			"program": "${workspaceFolder}/bazel-bin/cli/ecsact",
+			"cwd": "${workspaceFolder}",
+			"args": [
+				"codegen",
+				"${workspaceFolder}/examples/example.ecsact",
+				"${workspaceFolder}/examples/extras.ecsact",
+				"--plugin=${workspaceFolder}/dist/share/ecsact/plugins/ecsact_${input:plugin_name}_codegen",
+				"--stdout"
+			],
+			"type": "cppdbg",
+			"windows": {
+				"type": "cppvsdbg",
+				"program": "${workspaceFolder}/bazel-bin/cli/ecsact.exe"
+			},
+			"preLaunchTask": "copy dist plugins",
+			"sourceFileMap": {
+				"E:/.cache/bazel/output_base/execroot/ecsact_sdk": "${workspaceFolder}"
+			}
 		}
 	],
 	"compounds": []
