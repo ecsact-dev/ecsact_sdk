@@ -54,9 +54,9 @@ rules_pkg_dependencies()
 
 http_archive(
     name = "ecsact_rtb",
-    sha256 = "fd3f37f77d68b5d3aaa2f9d8b5a07c4e5c19272b8ad3ae13963182e758f5956c",
-    strip_prefix = "ecsact_rtb-ce658d4e739838bcac29ae4019f82abd763ebf99",
-    url = "https://github.com/ecsact-dev/ecsact_rtb/archive/ce658d4e739838bcac29ae4019f82abd763ebf99.zip",
+    sha256 = "6a64f5eee0bcc7b7bf10d45463523b7e4473f92d98cd3dec7e22ab05669a21e7",
+    strip_prefix = "ecsact_rtb-b06c50abb99af98291f3f6088ba9ee4633fd3783",
+    url = "https://github.com/ecsact-dev/ecsact_rtb/archive/b06c50abb99af98291f3f6088ba9ee4633fd3783.zip",
 )
 
 http_archive(
