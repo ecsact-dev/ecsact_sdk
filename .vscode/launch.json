@@ -14,7 +14,8 @@
 				"--plugin=${workspaceFolder}/bazel-bin/external/ecsact_lang_cpp/systems_header_codegen/ecsact_systems_header_codegen",
 				"--plugin=${workspaceFolder}/bazel-bin/external/ecsact_lang_cpp/cpp_systems_header_codegen/ecsact_cpp_systems_header_codegen",
 				"--plugin=${workspaceFolder}/bazel-bin/external/ecsact_lang_cpp/cpp_meta_header_codegen/ecsact_cpp_meta_header_codegen",
-				"--plugin=${workspaceFolder}/bazel-bin/external/ecsact_lang_csharp/csharp_codegen/ecsact_csharp_codegen"
+				"--plugin=${workspaceFolder}/bazel-bin/external/ecsact_lang_csharp/csharp_codegen/ecsact_csharp_codegen",
+				"--plugin=${workspaceFolder}/bazel-bin/external/ecsact_lang_json/json_codegen/ecsact_json_codegen"
 			],
 			"type": "cppdbg",
 			"windows": {
