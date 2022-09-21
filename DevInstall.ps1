@@ -1,6 +1,6 @@
 #!/usr/bin/env pwsh
 
-param ([Parameter(Mandatory)]$CertPassword)
+param ([Parameter(Mandatory)][SecureString] $CertPassword)
 
 $ErrorActionPreference = 'Stop'
 
