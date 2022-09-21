@@ -75,9 +75,9 @@ http_archive(
 
 http_archive(
     name = "ecsact_parse_runtime_interop",
-    sha256 = "a512dc184169a584fa8bd57f21383f6acbcb60d2815a7da8950e49656b3926b5",
-    strip_prefix = "ecsact_parse_runtime_interop-20a6aa2d6f43974be138cdfd27769b8ebcbcb1ac",
-    url = "https://github.com/ecsact-dev/ecsact_parse_runtime_interop/archive/20a6aa2d6f43974be138cdfd27769b8ebcbcb1ac.zip",
+    sha256 = "47282e7beeffa454b9c005428c595f4bb2a3e21c2e76fe06a4647c019a1562f1",
+    strip_prefix = "ecsact_parse_runtime_interop-f8955f902836f6d5a2513cb485b069dc4a3a7e54",
+    url = "https://github.com/ecsact-dev/ecsact_parse_runtime_interop/archive/f8955f902836f6d5a2513cb485b069dc4a3a7e54.zip",
 )
 
 http_archive(
