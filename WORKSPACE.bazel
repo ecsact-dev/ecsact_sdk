@@ -111,9 +111,9 @@ ecsact_rtb_repositories()
 
 http_archive(
     name = "com_google_googletest",
-    sha256 = "7fda611bceb5a793824a3c63ecbf68d2389e70c38f5763e9b1d415ca24912f44",
-    strip_prefix = "googletest-1336c4b6d1a6f4bc6beebccb920e5ff858889292",
-    url = "https://github.com/google/googletest/archive/1336c4b6d1a6f4bc6beebccb920e5ff858889292.zip",
+    sha256 = "23d35628c80c84f99f6beea44fe0ae042b8c9cab6cf5ff9d78bbc81f74053535",
+    strip_prefix = "googletest-63907e1bfe6f78806b17d094daf2198ee27aad62",
+    url = "https://github.com/google/googletest/archive/63907e1bfe6f78806b17d094daf2198ee27aad62.zip",
 )
 
 http_archive(
