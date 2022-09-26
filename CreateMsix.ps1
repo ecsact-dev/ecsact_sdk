@@ -5,7 +5,7 @@ param ([Parameter(Mandatory)] $Version, [Parameter(Mandatory)][SecureString] $Ce
 $ErrorActionPreference = 'Stop'
 
 $CertPasswordPlain = ConvertFrom-SecureString -SecureString $CertPassword -AsPlainText
-$CertPath = "$env:USERPROFILE\Documents\Certificates\Seaube.pfx"
+$CertPath = "$env:USERPROFILE\Documents\Certificates\EcsactDev.pfx"
 
 try {
 	((Get-Content -path .\dist\AppxManifest.xml -Raw) -replace '0.0.0.0-placeholder',"$($Version).0") | Set-Content -Path .\dist\AppxManifest.xml
