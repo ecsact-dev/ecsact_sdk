@@ -82,9 +82,9 @@ http_archive(
 
 http_archive(
     name = "ecsact_lang_cpp",
-    sha256 = "8f06f3fef52323e017c51b1d38faf935bab5ad08a38cd857b4f2d30d3dc2ab99",
-    strip_prefix = "ecsact_lang_cpp-c52d475bae67a6bf0f89f01e27f11f7264757805",
-    url = "https://github.com/ecsact-dev/ecsact_lang_cpp/archive/c52d475bae67a6bf0f89f01e27f11f7264757805.zip",
+    sha256 = "170b7e859ab8b057cb925a8ea67c236076b11c63e47f54ca4a8d70e8c0d16c33",
+    strip_prefix = "ecsact_lang_cpp-e45824f0fe2a785f05f5d134e2c7f29107145c57",
+    url = "https://github.com/ecsact-dev/ecsact_lang_cpp/archive/e45824f0fe2a785f05f5d134e2c7f29107145c57.zip",
 )
 
 http_archive(
