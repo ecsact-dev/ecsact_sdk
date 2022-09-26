@@ -24,7 +24,7 @@ try {
 	$MsixPath = "ecsact_sdk_$($LatestTag)_windows_x64.msix"
 	$CertPassword = Read-Host "Cert Password"
 	MSIXHeroCLI pack -d dist -p $MsixPath
-	MSIXHeroCLI sign --file $env:USERPROFILE\Documents\Certificates\Seaube.pfx -p $CertPassword $MsixPath
+	MSIXHeroCLI sign --file $env:USERPROFILE\Documents\Certificates\EcsactDev.pfx -p $CertPassword $MsixPath
 	gh release upload $LatestTag $MsixPath
 } finally {
 	git checkout .\dist\AppxManifest.xml
