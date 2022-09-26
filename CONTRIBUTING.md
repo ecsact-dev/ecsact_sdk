@@ -6,10 +6,21 @@ The Ecsact SDK repository doesn't contain very much source code, but is a great 
 
 If you want to makes changes to another ecsact repository (such as [ecsact_rtb](https://github.com/ecsact-dev/ecsact_rtb)) you may want to install the SDK with your changes. To do that you use the `DevInstall` script with the repository you want to contribute to
 
-Add to your `user.bazelrc` file in this repository to override the specified one in the `WORKSPACE.bazel` file. If `user.bazelrc` doesn't exist then create one.
+The Ecsact SDK is built with [`bazel`](https://bazel.build/). We recommend you install [bazelisk](https://bazel.build/install/bazelisk) and have it available as `bazel` in your `PATH`.
+
+To configure your `bazel` settings you may add options to your `user.bazelrc` file in the root of this repository. If `user.bazelrc` doesn't exist, create one.
+
+Add [override_repository](https://bazel.build/reference/command-line-reference#flag--override_repository) options for repositories you want to contribute to:
 
 ```bazelrc
-build --override_repository=ecsact_rtb=/path/to/cloned/repository/repository
+build --override_repository=example1=/path/to/cloned/example1_repo
+build --override_repository=example2=/path/to/cloned/example2_repo
+```
+
+Optionally if you'd like to build everything in **debug mode** you may add the following:
+
+```bazelrc
+build -c dbg
 ```
 
 ### DevInstall Script (Windows)
