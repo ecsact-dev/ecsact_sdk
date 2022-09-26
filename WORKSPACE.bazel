@@ -68,9 +68,9 @@ http_archive(
 
 http_archive(
     name = "ecsact_runtime",
-    sha256 = "a07564c5745559c487b9896c836975535ef1d4c0ac1d10886ca9c1bb1add5111",
-    strip_prefix = "ecsact_runtime-f290172b46788f213ea8b338991aebb989b35a01",
-    url = "https://github.com/ecsact-dev/ecsact_runtime/archive/f290172b46788f213ea8b338991aebb989b35a01.zip",
+    sha256 = "1e8089756eaef324bf41c25a172ac101b54ab16026f6455b451cc39e7c467a4b",
+    strip_prefix = "ecsact_runtime-3ecc7d27a064b1d2899db33a859f34e836dcd1a0",
+    url = "https://github.com/ecsact-dev/ecsact_runtime/archive/3ecc7d27a064b1d2899db33a859f34e836dcd1a0.zip",
 )
 
 http_archive(
