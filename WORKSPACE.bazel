@@ -96,9 +96,9 @@ http_archive(
 
 http_archive(
     name = "ecsact_lang_csharp",
-    sha256 = "dcb4d9c1b520d7af3b38b56f60a14076f531fa7d6a544a4477aa686f08f39cd6",
-    strip_prefix = "ecsact_lang_csharp-44be9bec741ca6e5fa605625067913a7aece23c5",
-    url = "https://github.com/ecsact-dev/ecsact_lang_csharp/archive/44be9bec741ca6e5fa605625067913a7aece23c5.zip",
+    sha256 = "bd4ea4a0aa961e7e8e4520090074faea9a574829cafb87802cdf85076ee3b79e",
+    strip_prefix = "ecsact_lang_csharp-3e4d9fc68b3d0f62465641682064da051510d69e",
+    url = "https://github.com/ecsact-dev/ecsact_lang_csharp/archive/3e4d9fc68b3d0f62465641682064da051510d69e.zip",
 )
 
 load("@ecsact_parse//:repositories.bzl", "ecsact_parse_dependencies")
