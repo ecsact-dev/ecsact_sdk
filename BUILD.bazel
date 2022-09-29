@@ -47,6 +47,7 @@ bzlws_copy(
         "@ecsact_lang_cpp//cpp_header_codegen",
         "@ecsact_lang_cpp//cpp_meta_header_codegen",
         "@ecsact_lang_cpp//cpp_systems_header_codegen",
+        "@ecsact_lang_cpp//cpp_systems_source_codegen",
         "@ecsact_lang_cpp//systems_header_codegen",
         "@ecsact_lang_csharp//csharp_codegen",
         "@ecsact_lang_json//json_codegen",
