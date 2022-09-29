@@ -1,8 +1,6 @@
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:base"
-  ],
-  "automerge": true,
-  "platformAutomerge": true
+	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
+	"extends": [
+		"github>ecsact-dev/renovate-config"
+	]
 }
