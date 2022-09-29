@@ -89,9 +89,9 @@ http_archive(
 
 http_archive(
     name = "ecsact_lang_json",
-    sha256 = "907abad2afcfd72e10fb97478da399d098edb7331e2c41a66de98d3a4531400c",
-    strip_prefix = "ecsact_lang_json-7b36aa3f2766c97717e3a16fc455efb6d69d94cc",
-    url = "https://github.com/ecsact-dev/ecsact_lang_json/archive/7b36aa3f2766c97717e3a16fc455efb6d69d94cc.zip",
+    sha256 = "a8f7483aac08ec89f10c261592fb5cfeced365bab3ecf9abf951f784a682d582",
+    strip_prefix = "ecsact_lang_json-74ea5722663af5351098ca4925ab289aeaca54bb",
+    url = "https://github.com/ecsact-dev/ecsact_lang_json/archive/74ea5722663af5351098ca4925ab289aeaca54bb.zip",
 )
 
 http_archive(
