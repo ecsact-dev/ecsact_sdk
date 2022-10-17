@@ -9,7 +9,7 @@
 #include <boost/dll/shared_library.hpp>
 #include <boost/dll/library_info.hpp>
 #include "docopt.h"
-#include "ecsact/parse_runtime_interop.h"
+#include "ecsact/interpret/eval.hh"
 #include "ecsact/runtime/meta.h"
 #include "ecsact/runtime/dylib.h"
 #include "ecsact/codegen_plugin.h"
@@ -113,9 +113,12 @@ int ecsact::cli::detail::codegen_command(int argc, char* argv[]) {
 
 	auto args = docopt::docopt(USAGE, {argv + 1, argv + argc});
 	bool files_error = false;
-	auto files = args.at("<files>").asStringList();
+	auto files_str = args.at("<files>").asStringList();
+	std::vector<fs::path> files;
+	files.reserve(files_str.size());
 
-	for(fs::path file_path : files) {
+	for(fs::path file_path : files_str) {
+		files.push_back(file_path);
 		if(file_path.extension() != ".ecsact") {
 			files_error = true;
 			std::cerr
@@ -171,16 +174,16 @@ int ecsact::cli::detail::codegen_command(int argc, char* argv[]) {
 		return 1;
 	}
 
-	std::vector<const char*> cstr_files;
-	cstr_files.reserve(files.size());
-	for(auto& file : files) {
-		cstr_files.emplace_back() = file.c_str();
+	auto eval_errors = ecsact::eval_files(files);
+	if(!eval_errors.empty()) {
+		for(auto& eval_err : eval_errors) {
+			std::cerr
+				<< "[ERROR] " << files[eval_err.source_index].string()
+				<< ":" << eval_err.line << ":" << eval_err.character << " "
+				<< eval_err.error_message << "\n";
+		}
+		return 1;
 	}
-
-	ecsact_parse_runtime_interop(
-		cstr_files.data(),
-		static_cast<int32_t>(cstr_files.size())
-	);
 
 	std::vector<ecsact_package_id> package_ids;
 	package_ids.resize(static_cast<int32_t>(ecsact_meta_count_packages()));
