@@ -1,6 +1,7 @@
 workspace(name = "ecsact_sdk")
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+load("//:index.bzl", "ecsact_dev_repositories")
 
 _NLOHMANN_JSON_BUILD_FILE = """
 load("@rules_cc//cc:defs.bzl", "cc_library")
@@ -66,12 +67,12 @@ http_archive(
     url = "https://github.com/ecsact-dev/ecsact_parse/archive/45a30d62a0c53acb3a329fa9df250c20f0b384d1.zip",
 )
 
-http_archive(
-    name = "ecsact_runtime",
-    sha256 = "f7b5f5cc5b70620934be48090048e9092dbc86ba4e027959d65fd1dd46c36a77",
-    strip_prefix = "ecsact_runtime-475cae75c657b2570b1041264670c026de412814",
-    url = "https://github.com/ecsact-dev/ecsact_runtime/archive/475cae75c657b2570b1041264670c026de412814.zip",
-)
+[http_archive(
+    name = repo.name,
+    sha256 = repo.sha256,
+    strip_prefix = repo.strip_prefix,
+    url = repo.url,
+) for repo in ecsact_dev_repositories]
 
 http_archive(
     name = "ecsact_interpret",
