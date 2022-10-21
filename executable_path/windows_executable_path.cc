@@ -5,8 +5,10 @@
 namespace fs = std::filesystem;
 
 fs::path executable_path::executable_path() {
-	char result[MAX_PATH];
+	char   result[MAX_PATH];
 	size_t length = GetModuleFileName(NULL, result, MAX_PATH);
-	if(length == 0) return fs::path{};
+	if(length == 0) {
+		return fs::path{};
+	}
 	return fs::path(std::string(result, length));
 }

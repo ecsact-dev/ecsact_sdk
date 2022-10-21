@@ -18,10 +18,8 @@
 #include "executable_path/executable_path.hh"
 
 namespace fs = std::filesystem;
-constexpr auto file_readonly_perms =
-	fs::perms::others_read |
-	fs::perms::group_read |
-	fs::perms::owner_read;
+constexpr auto file_readonly_perms = fs::perms::others_read |
+	fs::perms::group_read | fs::perms::owner_read;
 
 constexpr auto USAGE = R"(Ecsact Codegen Command
 
@@ -52,16 +50,15 @@ static auto platform_plugin_extension() {
 	return boost::dll::shared_library::suffix().string();
 }
 
-static std::optional<fs::path> resolve_plugin_path
-	( const std::string&      plugin_arg
-	, const fs::path&         default_plugins_dir
-	, std::vector<fs::path>&  checked_plugin_paths
-	)
-{
+static std::optional<fs::path> resolve_plugin_path(
+	const std::string&     plugin_arg,
+	const fs::path&        default_plugins_dir,
+	std::vector<fs::path>& checked_plugin_paths
+) {
 	using namespace std::string_literals;
 
-	const bool is_maybe_named_plugin =
-		plugin_arg.find('/') == std::string::npos &&
+	const bool is_maybe_named_plugin = plugin_arg.find('/') ==
+			std::string::npos &&
 		plugin_arg.find('\\') == std::string::npos &&
 		plugin_arg.find('.') == std::string::npos;
 
@@ -91,29 +88,22 @@ static std::optional<fs::path> resolve_plugin_path
 	return {};
 }
 
-static void stdout_write_fn
-	( const char*  str
-	, int32_t      str_len
-	)
-{
+static void stdout_write_fn(const char* str, int32_t str_len) {
 	std::cout << std::string_view(str, str_len);
 }
 
 static thread_local std::ofstream file_write_stream;
-static void file_write_fn
-	( const char*  str
-	, int32_t      str_len
-	)
-{
+
+static void file_write_fn(const char* str, int32_t str_len) {
 	file_write_stream << std::string_view(str, str_len);
 }
 
 int ecsact::cli::detail::codegen_command(int argc, char* argv[]) {
 	using namespace std::string_literals;
 
-	auto args = docopt::docopt(USAGE, {argv + 1, argv + argc});
-	bool files_error = false;
-	auto files_str = args.at("<files>").asStringList();
+	auto                  args = docopt::docopt(USAGE, {argv + 1, argv + argc});
+	bool                  files_error = false;
+	auto                  files_str = args.at("<files>").asStringList();
 	std::vector<fs::path> files;
 	files.reserve(files_str.size());
 
@@ -121,33 +111,31 @@ int ecsact::cli::detail::codegen_command(int argc, char* argv[]) {
 		files.push_back(file_path);
 		if(file_path.extension() != ".ecsact") {
 			files_error = true;
-			std::cerr
-				<< "[ERROR] Expected .ecsact file instead got'"
-				<< file_path.string()
-				<< "'\n";
+			std::cerr << "[ERROR] Expected .ecsact file instead got'"
+								<< file_path.string() << "'\n";
 		} else if(!fs::exists(file_path)) {
 			files_error = true;
 			std::cerr << "[ERROR] '" << file_path.string() << "' does not exist\n";
 		}
 	}
 
-	auto default_plugins_dir = get_default_plugins_dir();
+	auto                  default_plugins_dir = get_default_plugins_dir();
 	std::vector<fs::path> plugin_paths;
 	std::vector<boost::dll::shared_library> plugins;
-	bool plugins_not_found = false;
-	bool invalid_plugins = false;
+	bool                                    plugins_not_found = false;
+	bool                                    invalid_plugins = false;
 
 	for(auto plugin_arg : args.at("--plugin").asStringList()) {
 		std::vector<fs::path> checked_plugin_paths;
-		auto plugin_path = resolve_plugin_path(
-			plugin_arg,
-			default_plugins_dir,
-			checked_plugin_paths
-		);
+		auto                  plugin_path = resolve_plugin_path(
+      plugin_arg,
+      default_plugins_dir,
+      checked_plugin_paths
+    );
 
 		if(plugin_path) {
 			boost::system::error_code ec;
-			auto& plugin = plugins.emplace_back();
+			auto&                     plugin = plugins.emplace_back();
 			plugin.load(plugin_path->string(), ec);
 			auto validate_result = ecsact::codegen::plugin_validate(*plugin_path);
 			if(validate_result.ok()) {
@@ -155,12 +143,12 @@ int ecsact::cli::detail::codegen_command(int argc, char* argv[]) {
 			} else {
 				invalid_plugins = true;
 				plugins.pop_back();
-				std::cerr
-					<< "[ERROR] Plugin validation failed for '" << plugin_arg << "'\n";
+				std::cerr << "[ERROR] Plugin validation failed for '" << plugin_arg
+									<< "'\n";
 			}
 		} else {
 			plugins_not_found = true;
-			std::cerr
+			std::cerr //
 				<< "[ERROR] Unable to find codegen plugin '" << plugin_arg
 				<< "'. Paths checked:\n";
 
@@ -177,9 +165,9 @@ int ecsact::cli::detail::codegen_command(int argc, char* argv[]) {
 	auto eval_errors = ecsact::eval_files(files);
 	if(!eval_errors.empty()) {
 		for(auto& eval_err : eval_errors) {
-			std::cerr
-				<< "[ERROR] " << files[eval_err.source_index].string()
-				<< ":" << eval_err.line << ":" << eval_err.character << " "
+			std::cerr //
+				<< "[ERROR] " << files[eval_err.source_index].string() << ":"
+				<< eval_err.line << ":" << eval_err.character << " "
 				<< eval_err.error_message << "\n";
 		}
 		return 1;
@@ -194,12 +182,11 @@ int ecsact::cli::detail::codegen_command(int argc, char* argv[]) {
 	);
 
 	std::unordered_set<std::string> output_paths;
-	bool has_plugin_error = false;
+	bool                            has_plugin_error = false;
 
 	for(auto& plugin : plugins) {
-		auto plugin_fn = plugin.get<decltype(ecsact_codegen_plugin)>(
-			"ecsact_codegen_plugin"
-		);
+		auto plugin_fn =
+			plugin.get<decltype(ecsact_codegen_plugin)>("ecsact_codegen_plugin");
 		auto plugin_name_fn = plugin.get<decltype(ecsact_codegen_plugin_name)>(
 			"ecsact_codegen_plugin_name"
 		);
@@ -208,22 +195,23 @@ int ecsact::cli::detail::codegen_command(int argc, char* argv[]) {
 		decltype(&ecsact_dylib_has_fn) dylib_has_fn = nullptr;
 
 		if(plugin.has("ecsact_dylib_has_fn")) {
-			dylib_has_fn = plugin.get<decltype(ecsact_dylib_has_fn)>(
-				"ecsact_dylib_has_fn"
-			);
+			dylib_has_fn =
+				plugin.get<decltype(ecsact_dylib_has_fn)>("ecsact_dylib_has_fn");
 		}
 
-		auto dylib_set_fn_addr = plugin.get<decltype(ecsact_dylib_set_fn_addr)>(
-			"ecsact_dylib_set_fn_addr"
-		);
+		auto dylib_set_fn_addr =
+			plugin.get<decltype(ecsact_dylib_set_fn_addr)>("ecsact_dylib_set_fn_addr"
+			);
 
 		auto set_meta_fn_ptr = [&](const char* fn_name, auto fn_ptr) {
-			if(dylib_has_fn && !dylib_has_fn(fn_name)) return;
-			dylib_set_fn_addr(fn_name, reinterpret_cast<void(*)()>(fn_ptr));
+			if(dylib_has_fn && !dylib_has_fn(fn_name)) {
+				return;
+			}
+			dylib_set_fn_addr(fn_name, reinterpret_cast<void (*)()>(fn_ptr));
 		};
 
-		#define CALL_SET_META_FN_PTR(fn_name, unused)\
-			set_meta_fn_ptr(#fn_name, &::fn_name)
+#define CALL_SET_META_FN_PTR(fn_name, unused) \
+	set_meta_fn_ptr(#fn_name, &::fn_name)
 		FOR_EACH_ECSACT_META_API_FN(CALL_SET_META_FN_PTR);
 
 		std::optional<fs::path> outdir;
@@ -233,9 +221,9 @@ int ecsact::cli::detail::codegen_command(int argc, char* argv[]) {
 				std::error_code ec;
 				fs::create_directories(*outdir, ec);
 				if(ec) {
-					std::cerr
-						<< "[ERROR] Failed to create out directory "
-						<< outdir->string() << ": " << ec.message() << "\n";
+					std::cerr //
+						<< "[ERROR] Failed to create out directory " << outdir->string()
+						<< ": " << ec.message() << "\n";
 					return 3;
 				}
 			}
@@ -248,7 +236,7 @@ int ecsact::cli::detail::codegen_command(int argc, char* argv[]) {
 			for(auto package_id : package_ids) {
 				fs::path output_file_path = ecsact_meta_package_file_path(package_id);
 				if(output_file_path.empty()) {
-					std::cerr
+					std::cerr //
 						<< "[ERROR] Could not find package source file path from "
 						<< "'ecsact_meta_package_file_path'\n";
 					continue;
@@ -264,9 +252,8 @@ int ecsact::cli::detail::codegen_command(int argc, char* argv[]) {
 
 				if(output_paths.contains(output_file_path.string())) {
 					has_plugin_error = true;
-					std::cerr
-						<< "[ERROR] Plugin '"
-						<< plugin.location().filename().string()
+					std::cerr //
+						<< "[ERROR] Plugin '" << plugin.location().filename().string()
 						<< "' has conflicts with another plugin output file '"
 						<< output_file_path.string() << "'\n";
 					continue;

@@ -1,15 +1,32 @@
 {
 	"editor.formatOnSave": true,
-	"lldb.launch.sourceMap": {
-		"/proc/self/cwd": "${workspaceFolder}"
-	},
 	"files.insertFinalNewline": true,
 	"files.eol": "\n",
 	"editor.insertSpaces": false,
+	"files.associations": {},
+	"editor.wordWrap": "wordWrapColumn",
+	"C_Cpp.autocomplete": "default",
+	"C_Cpp.autoAddFileAssociations": false,
 	"C_Cpp.default.compileCommands": "${workspaceFolder}/compile_commands.json",
-	"C_Cpp.default.includePath": [
-		"${default}",
-		"external/ecsact_runtime",
-		"external/ecsact_lang_cpp"
-	]
+	"lldb.launch.sourceMap": {
+		"/proc/self/cwd": "${workspaceFolder}"
+	},
+	"[json]": {
+		"editor.defaultFormatter": "vscode.json-language-features"
+	},
+	"[jsonc]": {
+		"editor.defaultFormatter": "vscode.json-language-features"
+	},
+	"[markdown]": {
+		"editor.defaultFormatter": "DavidAnson.vscode-markdownlint"
+	},
+	"[cpp]": {
+		"editor.detectIndentation": false,
+		"editor.defaultFormatter": "xaver.clang-format"
+	},
+	"[starlark]": {
+		"editor.defaultFormatter": "BazelBuild.vscode-bazel",
+		"editor.insertSpaces": true,
+		"editor.detectIndentation": false
+	}
 }
