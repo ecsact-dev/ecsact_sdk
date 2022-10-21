@@ -28,11 +28,15 @@ int main(int argc, char* argv[]) {
 		{"config", &ecsact::cli::detail::config_command},
 	};
 
-	for(int i=1; argc > i; ++i) {
-		if(argv[i][0] == '-') continue;
+	for(int i = 1; argc > i; ++i) {
+		if(argv[i][0] == '-') {
+			continue;
+		}
 
 		std::string arg = argv[i];
-		if(!commands.contains(arg)) continue;
+		if(!commands.contains(arg)) {
+			continue;
+		}
 
 		return commands.at(arg)(argc, argv);
 	}

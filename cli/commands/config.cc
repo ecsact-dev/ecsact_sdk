@@ -55,58 +55,68 @@ int ecsact::cli::detail::config_command(int argc, char* argv[]) {
 		}
 	}
 
-	auto install_prefix = exec_path.parent_path().parent_path();
-	auto plugin_dir = install_prefix / "share" / "ecsact" / "plugins";
+	auto           install_prefix = exec_path.parent_path().parent_path();
+	auto           plugin_dir = install_prefix / "share" / "ecsact" / "plugins";
 	nlohmann::json output = "{}"_json;
 
 	std::unordered_map<std::string, std::function<int()>> key_handlers{
-		{"include_dir", [&] {
-			auto includedir = install_prefix / "include";
-			auto core_hdr = includedir / "ecsact" / "runtime" / "core.h";
+		{
+			"include_dir",
+			[&] {
+				auto includedir = install_prefix / "include";
+				auto core_hdr = includedir / "ecsact" / "runtime" / "core.h";
 
-			if(fs::exists(core_hdr)) {
-				output["include_dir"] = includedir.string();
-			} else {
-				std::cerr << CANNOT_FIND_INCLUDE_DIR;
-				return 1;
-			}
-
-			return 0;
-		}},
-		{"plugin_dir", [&] {
-			if(fs::exists(plugin_dir)) {
-				output["plugin_dir"] = plugin_dir.string();
-			} else {
-				std::cerr << CANNOT_FIND_PLUGIN_DIR;
-				return 1;
-			}
-
-			return 0;
-		}},
-		{"builtin_plugins", [&] {
-			if(fs::exists(plugin_dir)) {
-				auto& builtin_plugins_str = output["builtin_plugins"];
-				std::vector<std::string> builtin_plugins;
-				for(auto& entry : fs::directory_iterator(plugin_dir)) {
-					auto filename = entry.path().filename().replace_extension("").string();
-					const auto prefix = "ecsact_"s;
-					const auto suffix = "_codegen"s;
-					if(filename.starts_with(prefix) && filename.ends_with(suffix)) {
-						builtin_plugins.emplace_back() = filename.substr(
-							prefix.size(),
-							filename.size() - prefix.size() - suffix.size()
-						);
-					}
+				if(fs::exists(core_hdr)) {
+					output["include_dir"] = includedir.string();
+				} else {
+					std::cerr << CANNOT_FIND_INCLUDE_DIR;
+					return 1;
 				}
 
-				output["builtin_plugins"] = builtin_plugins;
-			} else {
-				std::cerr << CANNOT_FIND_PLUGIN_DIR;
-				return 1;
-			}
+				return 0;
+			},
+		},
+		{
+			"plugin_dir",
+			[&] {
+				if(fs::exists(plugin_dir)) {
+					output["plugin_dir"] = plugin_dir.string();
+				} else {
+					std::cerr << CANNOT_FIND_PLUGIN_DIR;
+					return 1;
+				}
 
-			return 0;
-		}},
+				return 0;
+			},
+		},
+		{
+			"builtin_plugins",
+			[&] {
+				if(fs::exists(plugin_dir)) {
+					auto& builtin_plugins_str = output["builtin_plugins"];
+					std::vector<std::string> builtin_plugins;
+					for(auto& entry : fs::directory_iterator(plugin_dir)) {
+						auto filename =
+							entry.path().filename().replace_extension("").string();
+						const auto prefix = "ecsact_"s;
+						const auto suffix = "_codegen"s;
+						if(filename.starts_with(prefix) && filename.ends_with(suffix)) {
+							builtin_plugins.emplace_back() = filename.substr(
+								prefix.size(),
+								filename.size() - prefix.size() - suffix.size()
+							);
+						}
+					}
+
+					output["builtin_plugins"] = builtin_plugins;
+				} else {
+					std::cerr << CANNOT_FIND_PLUGIN_DIR;
+					return 1;
+				}
+
+				return 0;
+			},
+		},
 	};
 
 	auto keys = args.at("<keys>").asStringList();
