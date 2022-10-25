@@ -20,7 +20,8 @@ Expand-Archive -Path $ArchivePath -DestinationPath dist
 
 ((Get-Content -path .\dist\AppxManifest.xml -Raw) -replace '0.0.0.0-placeholder',"$($LatestTag).0") | Set-Content -Path .\dist\AppxManifest.xml
 
-((Get-Content -path .\ecsact_sdk.appinstaller -Raw) -replace '0.0.0.0-placeholder',"$($LatestTag)") | Set-Content -Path .\ecsact_sdk.appinstaller
+((Get-Content -path .\ecsact_sdk.appinstaller -Raw) -replace '0.0.0.0-placeholder',"$($LatestTag).0") | Set-Content -Path .\ecsact_sdk.appinstaller
+((Get-Content -path .\ecsact_sdk.appinstaller -Raw) -replace '0.0.0-placeholder',"$($LatestTag)") | Set-Content -Path .\ecsact_sdk.appinstaller
 
 try {
 	$MsixPath = "ecsact_sdk_$($LatestTag)_windows_x64.msix"
