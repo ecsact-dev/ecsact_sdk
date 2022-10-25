@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<AppInstaller Uri="https://github.com/ecsact-dev/ecsact_sdk/releases/download/0.0.0.0-placeholder/ecsact_sdk.appinstaller" Version="0.0.0.0-placeholder" xmlns="http://schemas.microsoft.com/appx/appinstaller/2018">
-	<MainPackage Name="EcsactSDK" Publisher="CN=Seaube" Version="0.0.0.0-placeholder" Uri="https://github.com/ecsact-dev/ecsact_sdk/releases/download/0.0.0.0-placeholder/ecsact_sdk_0.0.0.0-placeholder_windows_x64.msix" ProcessorArchitecture="x64" />
+<AppInstaller Uri="https://ecsact.dev/ecsact_sdk.appinstaller" Version="0.0.0.0-placeholder" xmlns="http://schemas.microsoft.com/appx/appinstaller/2018">
+	<MainPackage Name="EcsactSDK" Publisher="CN=Seaube" Version="0.0.0.0-placeholder" Uri="https://ecsact.dev/ecsact_sdk_0.0.0.0-placeholder_windows_x64.msix" ProcessorArchitecture="x64" />
 	<UpdateSettings>
 		<OnLaunch ShowPrompt="true" UpdateBlocksActivation="false" />
 		<ForceUpdateFromAnyVersion>true</ForceUpdateFromAnyVersion>
