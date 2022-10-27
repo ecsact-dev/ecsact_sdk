@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <AppInstaller Uri="https://ecsact.dev/ecsact_sdk.appinstaller" Version="0.0.0.0-placeholder" xmlns="http://schemas.microsoft.com/appx/appinstaller/2018">
-	<MainPackage Name="EcsactSdk" Publisher="CN=Seaube" Version="0.0.0.0-placeholder" Uri="https://ecsact.dev/ecsact_sdk_0.0.0-placeholder_windows_x64.msix" ProcessorArchitecture="neutral" />
+	<MainPackage Name="EcsactSdk" Publisher="CN=Seaube Software CORP., O=Seaube Software CORP., S=British Columbia, C=CA" Version="0.0.0.0-placeholder" Uri="https://ecsact.dev/ecsact_sdk_0.0.0-placeholder_windows_x64.msix" ProcessorArchitecture="neutral" />
 	<UpdateSettings>
 		<OnLaunch ShowPrompt="true" UpdateBlocksActivation="false" />
 		<ForceUpdateFromAnyVersion>true</ForceUpdateFromAnyVersion>
