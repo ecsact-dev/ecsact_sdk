@@ -32,6 +32,17 @@ bzlws_copy(
 )
 
 bzlws_copy(
+    name = "copy_dist_images",
+    srcs = [
+        "@ecsact_logo//:ecsact-color",
+        "@ecsact_logo//:ecsact-color150",
+        "@ecsact_logo//:ecsact-color44",
+    ],
+    out = "dist/images/{FILENAME}",
+    force = True,
+)
+
+bzlws_copy(
     name = "copy_dist_include",
     srcs = [
         "@ecsact_runtime//:headers",
