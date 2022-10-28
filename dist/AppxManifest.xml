@@ -4,7 +4,7 @@
 	<Properties>
 		<DisplayName>Ecsact SDK</DisplayName>
 		<PublisherDisplayName>Seaube</PublisherDisplayName>
-		<Logo>images\logo.png</Logo>
+		<Logo>images\ecsact-color.png</Logo>
 		<Description>Ecsact development tools and runtime headers. https://ecsact.dev</Description>
 	</Properties>
 	<Resources>
@@ -15,7 +15,7 @@
 	</Dependencies>
 	<Applications>
 		<Application Id="EcsactSdk.Ecsact" Executable="bin/ecsact.exe" EntryPoint="Windows.FullTrustApplication">
-			<uap3:VisualElements DisplayName="Ecsact CLI" Description="Ecsact Command Line Interface" BackgroundColor="transparent" Square44x44Logo="images/logo44.png" Square150x150Logo="images/logo150.png" AppListEntry="none" VisualGroup="Ecsact" />
+			<uap3:VisualElements DisplayName="Ecsact CLI" Description="Ecsact Command Line Interface" BackgroundColor="transparent" Square44x44Logo="images/ecsact-color44.png" Square150x150Logo="images/ecsact-color150.png" AppListEntry="none" VisualGroup="Ecsact" />
 			<Extensions>
 				<uap3:Extension Category="windows.appExecutionAlias">
 					<uap3:AppExecutionAlias>
@@ -25,7 +25,7 @@
 			</Extensions>
 		</Application>
 		<Application Id="EcsactSdk.EcsactRuntimeBuilder" Executable="bin/ecsact_rtb.exe" EntryPoint="Windows.FullTrustApplication">
-			<uap3:VisualElements DisplayName="Ecsact Runtime Builder CLI" Description="Ecsact Runtime Builder Command Line Interface" BackgroundColor="transparent" Square44x44Logo="images/logo44.png" Square150x150Logo="images/logo150.png" AppListEntry="none" VisualGroup="Ecsact" />
+			<uap3:VisualElements DisplayName="Ecsact Runtime Builder CLI" Description="Ecsact Runtime Builder Command Line Interface" BackgroundColor="transparent" Square44x44Logo="images/ecsact-color44.png" Square150x150Logo="images/ecsact-color150.png" AppListEntry="none" VisualGroup="Ecsact" />
 			<Extensions>
 				<uap3:Extension Category="windows.appExecutionAlias">
 					<uap3:AppExecutionAlias>

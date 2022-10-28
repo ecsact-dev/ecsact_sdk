@@ -139,6 +139,37 @@ load("@rules_7zip//:setup.bzl", "setup_7zip")
 setup_7zip()
 
 http_archive(
+    name = "bazel_skylib",
+    sha256 = "74d544d96f4a5bb630d465ca8bbcfe231e3594e5aae57e1edbf17a6eb3ca2506",
+    urls = [
+        "https://mirror.bazel.build/github.com/bazelbuild/bazel-skylib/releases/download/1.3.0/bazel-skylib-1.3.0.tar.gz",
+        "https://github.com/bazelbuild/bazel-skylib/releases/download/1.3.0/bazel-skylib-1.3.0.tar.gz",
+    ],
+)
+
+load("@bazel_skylib//:workspace.bzl", "bazel_skylib_workspace")
+
+bazel_skylib_workspace()
+
+http_archive(
+    name = "rules_blender",
+    sha256 = "ac8dd6fb84f058beb774529baad8d27249415ee99ff9c7b3dda004722f055dcb",
+    strip_prefix = "rules_blender-580815c406f5dac682b2816314b5a2f7bbdb2ce3",
+    urls = ["https://github.com/zaucy/rules_blender/archive/580815c406f5dac682b2816314b5a2f7bbdb2ce3.zip"],
+)
+
+load("@rules_blender//:repo.bzl", "blender_repository")
+
+blender_repository(name = "blender")
+
+http_archive(
+    name = "ecsact_logo",
+    sha256 = "0ecba63837824cb9588ca350e8a9bd1263eb809be8e699aaefd0d7134fd533fe",
+    strip_prefix = "logo-ad8a285861d4744460d9d2a6458a4010a4ccf3e4",
+    urls = ["https://github.com/ecsact-dev/logo/archive/ad8a285861d4744460d9d2a6458a4010a4ccf3e4.zip"],
+)
+
+http_archive(
     name = "hedron_compile_commands",
     sha256 = "4deb7cd90ba69983ec7734c0dcc7071828ebdc430a69f82ddbccf698018b9c04",
     strip_prefix = "bazel-compile-commands-extractor-5ceebcf367f51c6a18fffe726755951a43b50e45",

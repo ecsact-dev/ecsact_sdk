@@ -15,6 +15,5 @@
 # MSIX distribution folder
 /dist/*
 !/dist/AppxManifest.xml
-!/dist/images
 *.msix
 *.zip
