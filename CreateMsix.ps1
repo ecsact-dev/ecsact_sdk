@@ -10,12 +10,26 @@ $ErrorActionPreference = 'Stop'
 
 $MakeAppxPath = "${env:ProgramFiles(x86)}\Windows Kits\10\bin\10.0.22621.0\x64\makeappx.exe"
 $SignToolPath = "${env:ProgramFiles(x86)}\Windows Kits\10\bin\10.0.22621.0\x64\signtool.exe"
+$MakePriPath = "${env:ProgramFiles(x86)}\Windows Kits\10\bin\10.0.22621.0\x64\makepri.exe"
 
 $CertPasswordPlain = ConvertFrom-SecureString -SecureString $CertPassword -AsPlainText
 
 try {
 	((Get-Content -path .\dist\AppxManifest.xml -Raw) -replace '0.0.0.0-placeholder',"$($Version).0") | Set-Content -Path .\dist\AppxManifest.xml
 	$MsixPath = "ecsact_sdk_$($Version)_windows_x64.msix"
+
+	Copy-Item ".\dist\images\ecsact-color44.png" ".\dist\images\ecsact-color44.targetsize-44_altform-unplated.png" -Force
+	Copy-Item ".\dist\images\ecsact-color150.png" ".\dist\images\ecsact-color150.targetsize-150_altform-unplated.png" -Force
+
+	& $MakePriPath createconfig /cf .\dist\priconfig.xml /dq en-US /o
+	if(-not $?) {
+		throw "$MakePriPath createconfig failed with exit code ${LastExitCode}"
+	}
+
+	& $MakePriPath new /pr .\dist /cf .\dist\priconfig.xml /dq en-US /o /OutputFile ".\dist\resources.pri"
+	if(-not $?) {
+		throw "$MakePriPath new failed with exit code ${LastExitCode}"
+	}
 
 	& $SignToolPath sign `
 		/debug /fd SHA384 `
