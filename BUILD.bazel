@@ -45,11 +45,12 @@ bzlws_copy(
 bzlws_copy(
     name = "copy_dist_include",
     srcs = [
+        "@ecsact_lang_cpp//:headers",
         "@ecsact_runtime//:headers",
     ],
     out = "dist/include/{FILEPATH}",
     force = True,
-    strip_filepath_prefix = "external/ecsact_runtime",
+    strip_filepath_prefix = "external/{BAZEL_LABEL_WORKSPACE_NAME}",
 )
 
 bzlws_copy(
