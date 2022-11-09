@@ -31,6 +31,9 @@ try {
 		throw "$MakePriPath new failed with exit code ${LastExitCode}"
 	}
 
+	Set-ItemProperty -Path .\dist\bin\ecsact.exe -Name IsReadOnly -Value $false
+	Set-ItemProperty -Path .\dist\bin\ecsact_rtb.exe -Name IsReadOnly -Value $false
+
 	& $SignToolPath sign `
 		/debug /fd SHA384 `
 		/f $CertPath `
@@ -42,6 +45,9 @@ try {
 	if(-not $?) {
 		throw "Signing dist binaries failed with exit code ${LastExitCode}"
 	}
+
+	Set-ItemProperty -Path .\dist\bin\ecsact.exe -Name IsReadOnly -Value $true
+	Set-ItemProperty -Path .\dist\bin\ecsact_rtb.exe -Name IsReadOnly -Value $true
 
 	& $MakeAppxPath pack /v /o /h SHA384 /d .\dist\ /p $MsixPath
 
