@@ -1,6 +1,9 @@
 #!/usr/bin/env pwsh
 
-param ([Parameter(Mandatory)][SecureString] $CertPassword)
+param (
+	[Parameter(Mandatory)][SecureString] $CertPassword,
+	$CertPath = "$env:USERPROFILE\Documents\Certificates\EcsactDev.pfx"
+)
 
 $ErrorActionPreference = 'Stop'
 
@@ -15,6 +18,6 @@ $GitTagSplit = $GitTag.Split(".")
 $IncrementedVersion = $GitTagSplit[0] + "." + $GitTagSplit[1] + "." + (([int]$GitTagSplit[2]) + 1)
 
 . .\CopyDist.ps1
-. .\CreateMsix.ps1 -Version $IncrementedVersion -CertPassword $CertPassword
+. .\CreateMsix.ps1 -Version $IncrementedVersion -CertPassword $CertPassword -CertPath $CertPath
 
 Add-AppPackage -Path $MsixPath
