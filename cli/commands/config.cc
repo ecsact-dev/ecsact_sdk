@@ -55,9 +55,9 @@ int ecsact::cli::detail::config_command(int argc, char* argv[]) {
 		}
 	}
 
-	auto           install_prefix = exec_path.parent_path().parent_path();
-	auto           plugin_dir = install_prefix / "share" / "ecsact" / "plugins";
-	nlohmann::json output = "{}"_json;
+	auto install_prefix = exec_path.parent_path().parent_path();
+	auto plugin_dir = install_prefix / "share" / "ecsact" / "plugins";
+	auto output = "{}"_json;
 
 	std::unordered_map<std::string, std::function<int()>> key_handlers{
 		{
