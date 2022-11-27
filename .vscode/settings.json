@@ -22,7 +22,7 @@
 	},
 	"[cpp]": {
 		"editor.detectIndentation": false,
-		"editor.defaultFormatter": "xaver.clang-format"
+		"editor.defaultFormatter": "seaube.clangformat"
 	},
 	"[starlark]": {
 		"editor.defaultFormatter": "BazelBuild.vscode-bazel",
