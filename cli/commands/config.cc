@@ -17,12 +17,17 @@ Usage:
 	ecsact config [<keys>...]
 
 Options:
-	--include_dir
-		Prints the include directory containing Ecsact headers.
-	--plugin_dir
-		Prints the directory containing all built-in Ecsact codegen plugins.
-	--builtin_plugins
-		Prints a list of built-in Ecsact codegen plugins available.
+	<keys>
+		Configuration keys. When 1 key is provided the config value for that key is 
+		printed to stdout. If no keys or more than 1 key is provided then a JSON 
+		object is printed to stdout.
+		
+		Available config keys:
+			install_dir       directory Ecsact SDK was installed to
+			include_dir       directory containing Ecsact headers
+			plugin_dir        directory containing built-in Ecsact codegen plugins
+			builtin_plugins   list of built-in Ecsact codegen plugins available.
+
 )";
 
 constexpr auto CANNOT_FIND_INCLUDE_DIR = R"(
@@ -60,6 +65,13 @@ int ecsact::cli::detail::config_command(int argc, char* argv[]) {
 	auto output = "{}"_json;
 
 	std::unordered_map<std::string, std::function<int()>> key_handlers{
+		{
+			"install_dir",
+			[&] {
+				output["install_dir"] = install_prefix.string();
+				return 0;
+			},
+		},
 		{
 			"include_dir",
 			[&] {
@@ -129,6 +141,12 @@ int ecsact::cli::detail::config_command(int argc, char* argv[]) {
 		}
 	} else {
 		for(auto key : keys) {
+			if(!key_handlers.contains(key)) {
+				std::cerr << "[ERROR] Invalid config key: " << key << "\n\n";
+				std::cerr << USAGE;
+				return 1;
+			}
+
 			int exit_code = key_handlers.at(key)();
 			if(exit_code != 0) {
 				return exit_code;
