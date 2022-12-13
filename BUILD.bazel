@@ -26,6 +26,7 @@ bzlws_copy(
     srcs = [
         "//cli:ecsact",
         "@ecsact_rtb//cli:ecsact_rtb",
+        "@ecsact_lsp_server",
     ],
     out = "dist/bin/{FILENAME}",
     force = True,

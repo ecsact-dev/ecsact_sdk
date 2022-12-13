@@ -9,7 +9,6 @@
 #include "./commands/config.hh"
 
 using namespace std::string_view_literals;
-namespace fs = std::filesystem;
 
 constexpr auto LOGO_RAW = R"(
           ########\                                          ##\     

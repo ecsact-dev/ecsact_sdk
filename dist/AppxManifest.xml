@@ -24,6 +24,7 @@
 				</uap3:Extension>
 			</Extensions>
 		</Application>
+
 		<Application Id="EcsactSdk.EcsactRuntimeBuilder" Executable="bin/ecsact_rtb.exe" EntryPoint="Windows.FullTrustApplication">
 			<uap3:VisualElements DisplayName="Ecsact Runtime Builder CLI" Description="Ecsact Runtime Builder Command Line Interface" BackgroundColor="transparent" Square44x44Logo="images/ecsact-color44.png" Square150x150Logo="images/ecsact-color150.png" AppListEntry="none" VisualGroup="Ecsact" />
 			<Extensions>
@@ -34,6 +35,18 @@
 				</uap3:Extension>
 			</Extensions>
 		</Application>
+	
+		<Application Id="EcsactSdk.EcsactLanguageServer" Executable="bin/ecsact_lsp_server.exe" EntryPoint="Windows.FullTrustApplication">
+			<uap3:VisualElements DisplayName="Ecsact Language Server" Description="Esact Language Server CLI" BackgroundColor="transparent" Square44x44Logo="images/ecsact-color44.png" Square150x150Logo="images/ecsact-color150.png" AppListEntry="none" VisualGroup="Ecsact" />
+			<Extensions>
+				<uap3:Extension Category="windows.appExecutionAlias">
+					<uap3:AppExecutionAlias>
+						<uap8:ExecutionAlias Alias="ecsact_rtb.exe" />
+					</uap3:AppExecutionAlias>
+				</uap3:Extension>
+			</Extensions>
+		</Application>
+
 	</Applications>
 	<Capabilities>
 		<rescap:Capability Name="runFullTrust" />
