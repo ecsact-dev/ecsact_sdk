@@ -101,6 +101,13 @@ http_archive(
     url = "https://github.com/ecsact-dev/ecsact_lang_csharp/archive/a70f8c3267244347393d97d7490947c0acf72888.zip",
 )
 
+http_archive(
+    name = "ecsact_lsp_server",
+    sha256 = "a409f5d64695b41378a36e2609f3cc67290f113251d6b8828c240c924dad2500",
+    strip_prefix = "ecsact_lsp_server-b9502b48dd2b7f998cbc71ab9f37f87625ab89f2",
+    url = "https://github.com/ecsact-dev/ecsact_lsp_server/archive/b9502b48dd2b7f998cbc71ab9f37f87625ab89f2.zip",
+)
+
 load("@ecsact_parse//:repositories.bzl", "ecsact_parse_dependencies")
 
 ecsact_parse_dependencies()
