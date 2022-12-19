@@ -14,6 +14,7 @@
 #include "ecsact/runtime/dylib.h"
 #include "ecsact/codegen_plugin.h"
 #include "ecsact/codegen/plugin_validate.hh"
+#include "magic_enum.hpp"
 
 #include "executable_path/executable_path.hh"
 
@@ -145,6 +146,10 @@ int ecsact::cli::detail::codegen_command(int argc, char* argv[]) {
 				plugins.pop_back();
 				std::cerr << "[ERROR] Plugin validation failed for '" << plugin_arg
 									<< "'\n";
+
+				for(auto err : validate_result.errors) {
+					std::cerr << " - " << to_string(err) << "\n";
+				}
 			}
 		} else {
 			plugins_not_found = true;

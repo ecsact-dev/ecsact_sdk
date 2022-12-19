@@ -17,6 +17,7 @@ cc_library(
     deps = [
         ":command",
         "//executable_path",
+        "@magic_enum",
         "@bazelregistry_docopt_cpp//:docopt",
         "@boost//libs/dll",
         "@ecsact_interpret",
