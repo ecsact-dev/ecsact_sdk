@@ -127,12 +127,12 @@ int ecsact::cli::detail::codegen_command(int argc, char* argv[]) {
 	bool                                    invalid_plugins = false;
 
 	for(auto plugin_arg : args.at("--plugin").asStringList()) {
-		std::vector<fs::path> checked_plugin_paths;
-		auto                  plugin_path = resolve_plugin_path(
-      plugin_arg,
-      default_plugins_dir,
-      checked_plugin_paths
-    );
+		auto checked_plugin_paths = std::vector<fs::path>{};
+		auto plugin_path = resolve_plugin_path(
+			plugin_arg,
+			default_plugins_dir,
+			checked_plugin_paths
+		);
 
 		if(plugin_path) {
 			boost::system::error_code ec;
