@@ -53,6 +53,13 @@ load("@rules_pkg//:deps.bzl", "rules_pkg_dependencies")
 rules_pkg_dependencies()
 
 http_archive(
+    name = "ecsact_si_wasm",
+    sha256 = "58a56a207e58dd05296d4bf9aafb46f76b68f2a2c78346fd6c42ed426f0d8dd3",
+    strip_prefix = "ecsact_si_wasm-18f09a45ae6f5022c2e34e9846057f8bc889fb81",
+    urls = ["https://github.com/seaube/ecsact_si_wasm/archive/18f09a45ae6f5022c2e34e9846057f8bc889fb81.zip"],
+)
+
+http_archive(
     name = "ecsact_rt_entt",
     sha256 = "a34618fee8a1bec7cf933e71dec6191a56072d01ebb237eaada6ac2939920bda",
     strip_prefix = "ecsact_rt_entt-9816376a9b9026411f0f090623d96085e2247fb0",
