@@ -174,9 +174,9 @@ bazel_skylib_workspace()
 
 http_archive(
     name = "rules_blender",
-    sha256 = "ac8dd6fb84f058beb774529baad8d27249415ee99ff9c7b3dda004722f055dcb",
-    strip_prefix = "rules_blender-580815c406f5dac682b2816314b5a2f7bbdb2ce3",
-    urls = ["https://github.com/zaucy/rules_blender/archive/580815c406f5dac682b2816314b5a2f7bbdb2ce3.zip"],
+    sha256 = "3fa3c8de4172164563c5e8a98972d6b00e8e299a7266bc7a9ee2516546e71673",
+    strip_prefix = "rules_blender-e0513aede99e98558f95ff2d6ba9b9f576b3a61f",
+    urls = ["https://github.com/zaucy/rules_blender/archive/e0513aede99e98558f95ff2d6ba9b9f576b3a61f.zip"],
 )
 
 load("@rules_blender//:repo.bzl", "blender_repository")
