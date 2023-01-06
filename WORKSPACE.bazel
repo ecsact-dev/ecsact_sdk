@@ -53,6 +53,13 @@ load("@rules_pkg//:deps.bzl", "rules_pkg_dependencies")
 rules_pkg_dependencies()
 
 http_archive(
+    name = "ecsact_rt_entt",
+    sha256 = "a34618fee8a1bec7cf933e71dec6191a56072d01ebb237eaada6ac2939920bda",
+    strip_prefix = "ecsact_rt_entt-9816376a9b9026411f0f090623d96085e2247fb0",
+    urls = ["https://github.com/ecsact-dev/ecsact_rt_entt/archive/9816376a9b9026411f0f090623d96085e2247fb0.zip"],
+)
+
+http_archive(
     name = "ecsact_rtb",
     sha256 = "97047bd4d35f73871c28e09512ddaaafc872c607d69eead29267374ab48460ae",
     strip_prefix = "ecsact_rtb-a8ef793a89bfdfc6841930f0b646d5a42a033380",
