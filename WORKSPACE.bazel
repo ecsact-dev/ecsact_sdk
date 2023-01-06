@@ -61,9 +61,9 @@ http_archive(
 
 http_archive(
     name = "ecsact_rtb",
-    sha256 = "97047bd4d35f73871c28e09512ddaaafc872c607d69eead29267374ab48460ae",
-    strip_prefix = "ecsact_rtb-a8ef793a89bfdfc6841930f0b646d5a42a033380",
-    url = "https://github.com/ecsact-dev/ecsact_rtb/archive/a8ef793a89bfdfc6841930f0b646d5a42a033380.zip",
+    sha256 = "3ca2d00349ad0dca1cc29f46ed17c32f863eb6ce4f19de0ce4b90caded94429c",
+    strip_prefix = "ecsact_rtb-f6ec306b31ab6a94149952564c3a8238a01b0bcd",
+    url = "https://github.com/ecsact-dev/ecsact_rtb/archive/f6ec306b31ab6a94149952564c3a8238a01b0bcd.zip",
 )
 
 http_archive(
@@ -82,9 +82,9 @@ http_archive(
 
 http_archive(
     name = "ecsact_interpret",
-    sha256 = "202f3529546d3f3c5fda1d2c847241fc6e53669c86931ad8de82943b1e5d456d",
-    strip_prefix = "ecsact_interpret-dd6c029a52502ebfe6244c1ff46f8cd81b9119a1",
-    url = "https://github.com/ecsact-dev/ecsact_interpret/archive/dd6c029a52502ebfe6244c1ff46f8cd81b9119a1.zip",
+    sha256 = "6deee838ce5f81193c0b6c25b4b01909d405b8a562330cc17301b2027074db3a",
+    strip_prefix = "ecsact_interpret-dbf510c47dc1772bb691d04f780056a6ac5ed6dc",
+    url = "https://github.com/ecsact-dev/ecsact_interpret/archive/dbf510c47dc1772bb691d04f780056a6ac5ed6dc.zip",
 )
 
 http_archive(
