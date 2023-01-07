@@ -54,9 +54,9 @@ rules_pkg_dependencies()
 
 http_archive(
     name = "ecsact_si_wasm",
-    sha256 = "58a56a207e58dd05296d4bf9aafb46f76b68f2a2c78346fd6c42ed426f0d8dd3",
-    strip_prefix = "ecsact_si_wasm-18f09a45ae6f5022c2e34e9846057f8bc889fb81",
-    urls = ["https://github.com/seaube/ecsact_si_wasm/archive/18f09a45ae6f5022c2e34e9846057f8bc889fb81.zip"],
+    sha256 = "ca4f93deefc55a3fe8fa3bc03b7b48770f89d35391bc0b7cfb22c188722dbb71",
+    strip_prefix = "ecsact_si_wasm-4c91ffb7c623d27a9d035f882d1f2f1c7b1f3eaa",
+    urls = ["https://github.com/seaube/ecsact_si_wasm/archive/4c91ffb7c623d27a9d035f882d1f2f1c7b1f3eaa.zip"],
 )
 
 http_archive(
