@@ -54,17 +54,24 @@ bzlws_copy(
     strip_filepath_prefix = "external/{BAZEL_LABEL_WORKSPACE_NAME}",
 )
 
+# keep sorted
+_plugins = [
+    "@ecsact_lang_cpp//cpp_header_codegen:ecsact_cpp_header_codegen_bin",
+    "@ecsact_lang_cpp//cpp_meta_header_codegen:ecsact_cpp_meta_header_codegen_bin",
+    "@ecsact_lang_cpp//cpp_systems_header_codegen:ecsact_cpp_systems_header_codegen_bin",
+    "@ecsact_lang_cpp//cpp_systems_source_codegen:ecsact_cpp_systems_source_codegen_bin",
+    "@ecsact_lang_cpp//systems_header_codegen:ecsact_systems_header_codegen_bin",
+    "@ecsact_lang_csharp//csharp_codegen:ecsact_csharp_codegen_bin",
+    "@ecsact_lang_json//json_codegen:ecsact_json_codegen_bin",
+]
+
 bzlws_copy(
     name = "copy_dist_codegen_plugins",
-    srcs = [
-        "@ecsact_lang_cpp//cpp_header_codegen:ecsact_cpp_header_codegen_bin",
-        "@ecsact_lang_cpp//cpp_meta_header_codegen:ecsact_cpp_meta_header_codegen_bin",
-        "@ecsact_lang_cpp//cpp_systems_header_codegen:ecsact_cpp_systems_header_codegen_bin",
-        "@ecsact_lang_cpp//cpp_systems_source_codegen:ecsact_cpp_systems_source_codegen_bin",
-        "@ecsact_lang_cpp//systems_header_codegen:ecsact_systems_header_codegen_bin",
-        "@ecsact_lang_csharp//csharp_codegen:ecsact_csharp_codegen_bin",
-        "@ecsact_lang_json//json_codegen:ecsact_json_codegen_bin",
-    ],
+    srcs = select({
+        "@platforms//os:windows": _plugins + ["@ecsact_rust_codegen_windows//file"],
+        "@platforms//os:linux": _plugins + ["@ecsact_rust_codegen_linux//file"],
+        "//conditions:default": _plugins,
+    }),
     out = "dist/share/ecsact/plugins/{BAZEL_LABEL_NAME}[:-4].{EXTNAME}",
     force = True,
 )
