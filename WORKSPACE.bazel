@@ -1,6 +1,6 @@
 workspace(name = "ecsact_sdk")
 
-load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive", "http_file")
 
 _NLOHMANN_JSON_BUILD_FILE = """
 load("@rules_cc//cc:defs.bzl", "cc_library")
@@ -115,6 +115,20 @@ http_archive(
     url = "https://github.com/ecsact-dev/ecsact_lang_csharp/archive/cb983ebd02b0437ce69711f09b7d4a1175b1eea2.zip",
 )
 
+http_file(
+    name = "ecsact_rust_codegen_windows",
+    sha256 = "d35c8226f4953faf2d527d295c41adefd3215c61bad6f709e8ac812919c07daf",
+    url = "https://github.com/ecsact-dev/ecsact_lang_rust/releases/download/0.1.0/ecsact_rust_codegen_bin.dll",
+    downloaded_file_path = "ecsact_rust_codegen_bin.dll",
+)
+
+http_file(
+    name = "ecsact_rust_codegen_linux",
+    sha256 = "cac4856b63217960b4194812119def5f9a7126483533cc24e847abe66a120536",
+    url = "https://github.com/ecsact-dev/ecsact_lang_rust/releases/download/0.1.0/ecsact_rust_codegen_bin.so",
+    downloaded_file_path = "ecsact_rust_codegen_bin.so",
+)
+
 http_archive(
     name = "ecsact_lsp_server",
     sha256 = "a9f78d470a4346a13540b064f1a0f2c873a384d671e26b343778bbcc9716d52f",
@@ -139,9 +153,9 @@ http_archive(
 
 http_archive(
     name = "bzlws",
-    sha256 = "fbc78cd288e06bec4ab51bf05a185261968b8459f00ad667711005b26fb956b9",
-    strip_prefix = "bzlws-096d6b4f3ecf3443dec05b9fe55442b3fdc92d38",
-    url = "https://github.com/zaucy/bzlws/archive/096d6b4f3ecf3443dec05b9fe55442b3fdc92d38.zip",
+    sha256 = "312b04b13dfcb77c283a5b9d411a5b24d886bea9bd513b6e2bb7c355566c974b",
+    strip_prefix = "bzlws-3dcd03ed6a1be7099f65fd514c9a3efed800d0a0",
+    url = "https://github.com/zaucy/bzlws/archive/3dcd03ed6a1be7099f65fd514c9a3efed800d0a0.zip",
 )
 
 load("@bzlws//:repo.bzl", "bzlws_deps")
