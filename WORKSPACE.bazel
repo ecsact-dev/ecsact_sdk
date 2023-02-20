@@ -119,14 +119,14 @@ http_file(
     name = "ecsact_rust_codegen_windows",
     sha256 = "d35c8226f4953faf2d527d295c41adefd3215c61bad6f709e8ac812919c07daf",
     url = "https://github.com/ecsact-dev/ecsact_lang_rust/releases/download/0.1.0/ecsact_rust_codegen_bin.dll",
-    downloaded_file_path = "ecsact_rust_codegen_bin.dll",
+    downloaded_file_path = "ecsact_rust_codegen.dll",
 )
 
 http_file(
     name = "ecsact_rust_codegen_linux",
     sha256 = "cac4856b63217960b4194812119def5f9a7126483533cc24e847abe66a120536",
     url = "https://github.com/ecsact-dev/ecsact_lang_rust/releases/download/0.1.0/ecsact_rust_codegen_bin.so",
-    downloaded_file_path = "ecsact_rust_codegen_bin.so",
+    downloaded_file_path = "ecsact_rust_codegen.so",
 )
 
 http_archive(
