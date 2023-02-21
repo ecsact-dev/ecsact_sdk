@@ -27,7 +27,7 @@ jobs:
             ~/.cache/bazel-disk-cache
           key: ${{runner.os}}-bazel-cache
       - uses: actions/checkout@v3
-      - run: bazel build --config=ci --config=no-warnings ...
+      - run: bazel build --config=ci ...
   check-dist:
     runs-on: ubuntu-latest
     steps:

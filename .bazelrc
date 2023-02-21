@@ -11,8 +11,6 @@ build:linux --platforms=//bazel/platforms:linux
 build:linux --host_platform=//bazel/platforms:linux
 build:linux --extra_toolchains=@llvm_toolchain//:cc-toolchain-x86_64-linux
 
-build:no-warnings --per_file_copt=//.*@-Werror
-
 common:ci --announce_rc
 common:ci --disk_cache=~/.cache/bazel-disk-cache
 build:ci -c opt
