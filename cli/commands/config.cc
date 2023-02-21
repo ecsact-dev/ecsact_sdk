@@ -105,7 +105,6 @@ int ecsact::cli::detail::config_command(int argc, char* argv[]) {
 			"builtin_plugins",
 			[&] {
 				if(fs::exists(plugin_dir)) {
-					auto& builtin_plugins_str = output["builtin_plugins"];
 					std::vector<std::string> builtin_plugins;
 					for(auto& entry : fs::directory_iterator(plugin_dir)) {
 						auto filename =
