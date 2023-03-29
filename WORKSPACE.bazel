@@ -53,6 +53,13 @@ load("@rules_pkg//:deps.bzl", "rules_pkg_dependencies")
 rules_pkg_dependencies()
 
 http_archive(
+    name = "rules_cc_stamp",
+    strip_prefix = "rules_cc_stamp-63d4861f4d420b574fa0f112599aae2b8aee785e",
+    urls = ["https://github.com/zaucy/rules_cc_stamp/archive/63d4861f4d420b574fa0f112599aae2b8aee785e.zip"],
+    sha256 = "f469a3b97eeabeb850c655f59ea17799ff40badd3a0b3e9de38534c89ad2f87d",
+)
+
+http_archive(
     name = "ecsact_si_wasm",
     sha256 = "4153154fd80e2cd48ddd8e0d0c208691f134b33d5c67dc6fc081b3f77149b2c2",
     strip_prefix = "ecsact_si_wasm-2f8922cd9a72d54b7924742153a6113a88cc0867",
@@ -188,9 +195,9 @@ bazel_skylib_workspace()
 
 http_archive(
     name = "rules_blender",
-    sha256 = "1ae03c77c6e41b90904296f8d6269c3de9ffa12d0faef997a50e4edb225ef64c",
-    strip_prefix = "rules_blender-6f17aa27b6d76ecda9df0dab2be61adc2bc11c61",
-    urls = ["https://github.com/zaucy/rules_blender/archive/6f17aa27b6d76ecda9df0dab2be61adc2bc11c61.zip"],
+    sha256 = "734b08d1f0eb29a09f81509803cc324c2012a09f47e692a13c41af1370fcb648",
+    strip_prefix = "rules_blender-ef5c746f0ef3e9b8523175bed4ac8e8157fe0be3",
+    urls = ["https://github.com/zaucy/rules_blender/archive/ef5c746f0ef3e9b8523175bed4ac8e8157fe0be3.zip"],
 )
 
 load("@rules_blender//:repo.bzl", "blender_repository")

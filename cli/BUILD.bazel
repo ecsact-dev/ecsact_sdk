@@ -1,12 +1,19 @@
 load("@rules_cc//cc:defs.bzl", "cc_binary")
+load("@rules_cc_stamp//:index.bzl", "cc_stamp_header")
 load("//bazel:copts.bzl", "copts")
 
 package(default_visibility = ["//visibility:public"])
 
+cc_stamp_header(
+    name = "bazel_stamp_header",
+    out = "bazel_stamp_header.hh",
+)
+
 cc_binary(
     name = "ecsact",
-    srcs = ["cli.cc"],
+    srcs = ["cli.cc", "bazel_stamp_header.hh"],
     copts = copts,
+    stamp = 1,
     deps = [
         "//cli/commands:codegen",
         "//cli/commands:command",

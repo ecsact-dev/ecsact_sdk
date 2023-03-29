@@ -3,6 +3,7 @@
 #include <string>
 #include <string_view>
 #include <unordered_map>
+#include "cli/bazel_stamp_header.hh"
 
 #include "./commands/command.hh"
 #include "./commands/codegen.hh"
@@ -25,9 +26,9 @@ constexpr auto USAGE = R"(Ecsact SDK Command Line
 
 Usage:
 	ecsact (--help | -h)
+	ecsact (--version | -v)
 	ecsact config ([<options>...] | --help)
 	ecsact codegen ([<options>...] | --help)
-
 )";
 
 std::string colorize_logo() {
@@ -73,6 +74,9 @@ int main(int argc, char* argv[]) {
 
 		if(command == "-h" || command == "--help") {
 			print_usage();
+			return 0;
+		} else if(command == "-v" || command == "--version") {
+			std::cout << STABLE_ECSACT_SDK_VERSION << "\n";
 			return 0;
 		} else if(command.starts_with('-')) {
 			std::cerr << "Expected subcommand and instead got '" << command << "'\n";
