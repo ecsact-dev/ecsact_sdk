@@ -76,7 +76,7 @@ int main(int argc, char* argv[]) {
 			print_usage();
 			return 0;
 		} else if(command == "-v" || command == "--version") {
-			std::cout << STABLE_GIT_TAG << "\n";
+			std::cout << STABLE_ECSACT_SDK_VERSION << "\n";
 			return 0;
 		} else if(command.starts_with('-')) {
 			std::cerr << "Expected subcommand and instead got '" << command << "'\n";
