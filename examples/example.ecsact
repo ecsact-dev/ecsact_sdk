@@ -79,11 +79,6 @@ system PoisonCloudSpawner {
 	generates {
 		required Position;
 		required Poisonous;
-	}
-
-	generates {
-		required Position;
-		required Poisonous;
 		optional Health;
 	}
 }
@@ -98,7 +93,7 @@ system {
 	}
 }
 
-system {
+system PoisonDamageTargeterParent {
 	readonly Poisonous;
 	system PoisonDamageTargeter {
 		readwrite Health;
@@ -112,7 +107,7 @@ system PoisonExpiry {
 	adds PoisonExpired;
 }
 
-system {
+system PoisonExpiredCheck {
 	include PoisonExpired;
 	removes Poisoned;
 }
