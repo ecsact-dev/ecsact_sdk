@@ -10,6 +10,22 @@ cc_library(
 )
 
 cc_library(
+    name = "benchmark",
+    srcs = ["benchmark.cc"],
+    hdrs = ["benchmark.hh"],
+    copts = copts,
+    deps = [
+        ":command",
+        "//executable_path",
+        "@magic_enum",
+        "@bazelregistry_docopt_cpp//:docopt",
+        "@boost//libs/dll",
+        "@ecsact_runtime//:core",
+        "@ecsact_runtime//:serialize",
+    ],
+)
+
+cc_library(
     name = "codegen",
     srcs = ["codegen.cc"],
     hdrs = ["codegen.hh"],

@@ -5,8 +5,9 @@
 #include <unordered_map>
 #include "cli/bazel_stamp_header.hh"
 
-#include "./commands/command.hh"
+#include "./commands/benchmark.hh"
 #include "./commands/codegen.hh"
+#include "./commands/command.hh"
 #include "./commands/config.hh"
 
 using namespace std::string_view_literals;
@@ -27,8 +28,9 @@ constexpr auto USAGE = R"(Ecsact SDK Command Line
 Usage:
 	ecsact (--help | -h)
 	ecsact (--version | -v)
-	ecsact config ([<options>...] | --help)
+	ecsact benchmark ([<options>...] | --help)
 	ecsact codegen ([<options>...] | --help)
+	ecsact config ([<options>...] | --help)
 )";
 
 std::string colorize_logo() {
@@ -65,6 +67,7 @@ int main(int argc, char* argv[]) {
 	using ecsact::cli::detail::command_fn_t;
 
 	const std::unordered_map<std::string, command_fn_t> commands{
+		{"benchmark", &ecsact::cli::detail::benchmark_command},
 		{"codegen", &ecsact::cli::detail::codegen_command},
 		{"config", &ecsact::cli::detail::config_command},
 	};
