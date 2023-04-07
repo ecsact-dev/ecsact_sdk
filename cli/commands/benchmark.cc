@@ -30,9 +30,10 @@ Options:
 )";
 
 template<typename T>
-static auto get_or_exit(boost::dll::shared_library& runtime) -> T& {
-	// for C functions this should be fine
-	auto fn_name = std::string(typeid(T).name());
+static auto get_or_exit(
+	boost::dll::shared_library& runtime,
+	const std::string&          fn_name
+) -> T& {
 	assert(fn_name.starts_with("ecsact_"));
 
 	if(!runtime.has(fn_name)) {
@@ -70,12 +71,18 @@ int ecsact::cli::detail::benchmark_command(int argc, char* argv[]) {
 		return ec.value();
 	}
 
-	const auto create_reg_fn =
-		get_or_exit<decltype(ecsact_create_registry)>(runtime);
-	const auto exec_systems_fn =
-		get_or_exit<decltype(ecsact_execute_systems)>(runtime);
-	const auto restore_fn =
-		get_or_exit<decltype(ecsact_restore_entities)>(runtime);
+	const auto create_reg_fn = get_or_exit<decltype(ecsact_create_registry)>(
+		runtime,
+		"ecsact_create_registry"
+	);
+	const auto exec_systems_fn = get_or_exit<decltype(ecsact_execute_systems)>(
+		runtime,
+		"ecsact_execute_systems"
+	);
+	const auto restore_fn = get_or_exit<decltype(ecsact_restore_entities)>(
+		runtime,
+		"ecsact_restore_entities"
+	);
 
 	auto seed_file = std::fopen(seed_path.c_str(), "r");
 	if(seed_file == nullptr) {
@@ -91,7 +98,7 @@ int ecsact::cli::detail::benchmark_command(int argc, char* argv[]) {
 			return std::fread(out_data, 1, data_max_length, static_cast<FILE*>(ud));
 		},
 		nullptr,
-		&seed_file
+		seed_file
 	);
 
 	if(restore_err != ECSACT_RESTORE_OK) {
@@ -115,6 +122,8 @@ int ecsact::cli::detail::benchmark_command(int argc, char* argv[]) {
 
 		exec_durations[i] = exec_duration;
 	}
+
+	std::cout << "Done!\n";
 
 	return 0;
 }
