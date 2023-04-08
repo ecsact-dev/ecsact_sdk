@@ -22,6 +22,7 @@ cc_library(
         "@boost//libs/dll",
         "@ecsact_runtime//:core",
         "@ecsact_runtime//:serialize",
+        "@ecsact_si_wasm//:ecsactsi_wasm",
     ],
 )
 
