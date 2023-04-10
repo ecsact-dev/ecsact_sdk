@@ -73,11 +73,12 @@ struct system_impl_binary_arg {
 			if(comma_index != std::string::npos) {
 				auto& export_name = parsed_arg.export_names.emplace_back();
 				export_name =
-					str.substr(semi_colon_index, comma_index - semi_colon_index);
+					str.substr(semi_colon_index + 1, comma_index - semi_colon_index - 1);
 
 				auto& system_id = parsed_arg.system_ids.emplace_back();
 				system_id = static_cast<ecsact_system_like_id>(std::atoi(
-					str.substr(comma_index, next_semi_colon_index - comma_index).c_str()
+					str.substr(comma_index + 1, next_semi_colon_index - comma_index - 1)
+						.c_str()
 				));
 			}
 
@@ -91,6 +92,48 @@ struct system_impl_binary_arg {
 	std::vector<std::string>           export_names;
 	std::vector<ecsact_system_like_id> system_ids;
 };
+
+static auto print_last_error_if_available(boost::dll::shared_library& runtime)
+	-> bool {
+	if(!runtime.has("ecsactsi_wasm_last_error_message")) {
+		std::cout //
+			<< "[WARNING] Cannot get wasm error message because "
+				 "'ecsactsi_wasm_last_error_message' is missing\n";
+		return false;
+	}
+	if(!runtime.has("ecsactsi_wasm_last_error_message_length")) {
+		std::cout //
+			<< "[WARNING] Cannot get wasm error message because "
+				 "'ecsactsi_wasm_last_error_message_length' is missing\n";
+		return false;
+	}
+
+	auto get_last_error_message_fn =
+		runtime.get<decltype(ecsactsi_wasm_last_error_message)>(
+			"ecsactsi_wasm_last_error_message"
+		);
+	auto get_last_error_message_length_fn =
+		runtime.get<decltype(ecsactsi_wasm_last_error_message_length)>(
+			"ecsactsi_wasm_last_error_message_length"
+		);
+
+	auto err_msg = std::string{};
+	err_msg.resize(get_last_error_message_length_fn());
+
+	if(err_msg.empty()) {
+		std::cerr << "[WARNING] No additional error messages available\n";
+		return false;
+	}
+
+	get_last_error_message_fn(
+		err_msg.data(),
+		static_cast<int32_t>(err_msg.size())
+	);
+
+	std::cerr << err_msg << "\n";
+
+	return true;
+}
 
 int ecsact::cli::detail::benchmark_command(int argc, char* argv[]) {
 	using clock_t = std::chrono::high_resolution_clock;
@@ -144,7 +187,7 @@ int ecsact::cli::detail::benchmark_command(int argc, char* argv[]) {
 		auto export_names_c = std::vector<const char*>{};
 		export_names_c.reserve(export_names.size());
 
-		for(auto export_name : export_names) {
+		for(auto& export_name : export_names) {
 			export_names_c.push_back(export_name.c_str());
 		}
 
@@ -159,8 +202,8 @@ int ecsact::cli::detail::benchmark_command(int argc, char* argv[]) {
 
 		if(err != ECSACTSI_WASM_OK) {
 			std::cerr //
-				<< "Failed to load Wasm File: " << magic_enum::enum_name(err)
-				<< "\n  path: " << system_impl_binary_path_str << "\n";
+				<< "Failed to load Wasm File: " << magic_enum::enum_name(err) << "\n";
+			print_last_error_if_available(runtime);
 			return 1;
 		}
 	}
