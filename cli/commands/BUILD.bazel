@@ -23,6 +23,7 @@ cc_library(
         "@ecsact_runtime//:core",
         "@ecsact_runtime//:serialize",
         "@ecsact_si_wasm//:ecsactsi_wasm",
+        "@nlohmann_json//:json",
     ],
 )
 

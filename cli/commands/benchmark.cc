@@ -7,13 +7,19 @@
 #include <filesystem>
 #include <chrono>
 #include <ranges>
+#include <variant>
 #include <boost/dll/shared_library.hpp>
 #include <boost/dll/library_info.hpp>
 #include "docopt.h"
+#include "nlohmann/json.hpp"
 #include "ecsact/runtime/core.h"
 #include "ecsact/runtime/serialize.h"
 #include "ecsactsi_wasm.h"
 #include "magic_enum.hpp"
+
+using std::chrono::duration;
+using std::chrono::duration_cast;
+using std::chrono::nanoseconds;
 
 namespace fs = std::filesystem;
 
@@ -38,6 +44,72 @@ Options:
 		may be added in semi-colon (;) deliminated list.
 		NOTE: Only WebAssembly is allowed at this time.
 )";
+
+struct info_message {
+	static constexpr auto type = "info";
+	std::string           content;
+
+	NLOHMANN_DEFINE_TYPE_INTRUSIVE(info_message, content);
+};
+
+struct warning_message {
+	static constexpr auto type = "warning";
+	std::string           content;
+
+	NLOHMANN_DEFINE_TYPE_INTRUSIVE(warning_message, content);
+};
+
+struct error_message {
+	static constexpr auto type = "error";
+	std::string           content;
+
+	NLOHMANN_DEFINE_TYPE_INTRUSIVE(error_message, content);
+};
+
+struct benchmark_progress_message {
+	static constexpr auto type = "progress";
+
+	/**
+	 * 0 - 1 where 1 is 100%
+	 */
+	float progress;
+
+	NLOHMANN_DEFINE_TYPE_INTRUSIVE(benchmark_progress_message, progress);
+};
+
+struct benchmark_result_message {
+	static constexpr auto type = "result";
+	float                 total_duration_ms;
+	float                 average_duration_ms;
+
+	NLOHMANN_DEFINE_TYPE_INTRUSIVE(
+		benchmark_result_message,
+		total_duration_ms,
+		average_duration_ms
+	);
+};
+
+using benchmark_message_variant_t = std::variant<
+	info_message,
+	warning_message,
+	error_message,
+	benchmark_progress_message,
+	benchmark_result_message>;
+
+class stdout_json_benchmark_reporter {
+	template<typename MessageT>
+	void _report(MessageT& message) {
+		auto message_json = "{}"_json;
+		to_json(message_json, message);
+		message_json["type"] = MessageT::type;
+		std::cout << message_json.dump() + "\n";
+	}
+
+public:
+	void report(benchmark_message_variant_t message) {
+		std::visit([this](auto& message) { _report(message); }, message);
+	}
+};
 
 template<typename T>
 static auto get_or_exit(
@@ -93,18 +165,22 @@ struct system_impl_binary_arg {
 	std::vector<ecsact_system_like_id> system_ids;
 };
 
-static auto print_last_error_if_available(boost::dll::shared_library& runtime)
-	-> bool {
+static auto print_last_error_if_available(
+	boost::dll::shared_library&     runtime,
+	stdout_json_benchmark_reporter& reporter
+) -> bool {
 	if(!runtime.has("ecsactsi_wasm_last_error_message")) {
-		std::cout //
-			<< "[WARNING] Cannot get wasm error message because "
-				 "'ecsactsi_wasm_last_error_message' is missing\n";
+		reporter.report(warning_message{
+			"Cannot get wasm error message because "
+			"'ecsactsi_wasm_last_error_message' is missing",
+		});
 		return false;
 	}
 	if(!runtime.has("ecsactsi_wasm_last_error_message_length")) {
-		std::cout //
-			<< "[WARNING] Cannot get wasm error message because "
-				 "'ecsactsi_wasm_last_error_message_length' is missing\n";
+		reporter.report(warning_message{
+			"Cannot get wasm error message because "
+			"'ecsactsi_wasm_last_error_message_length' is missing",
+		});
 		return false;
 	}
 
@@ -146,6 +222,7 @@ int ecsact::cli::detail::benchmark_command(int argc, char* argv[]) {
 		std::views::transform( //
 			[](auto& str) { return system_impl_binary_arg::parse(str); }
 		);
+	auto reporter = stdout_json_benchmark_reporter{};
 
 	auto ec = boost::system::error_code{};
 	auto runtime = boost::dll::shared_library();
@@ -203,7 +280,7 @@ int ecsact::cli::detail::benchmark_command(int argc, char* argv[]) {
 		if(err != ECSACTSI_WASM_OK) {
 			std::cerr //
 				<< "Failed to load Wasm File: " << magic_enum::enum_name(err) << "\n";
-			print_last_error_if_available(runtime);
+			print_last_error_if_available(runtime, reporter);
 			return 1;
 		}
 	}
@@ -236,18 +313,33 @@ int ecsact::cli::detail::benchmark_command(int argc, char* argv[]) {
 	auto       exec_durations = std::vector<std::chrono::nanoseconds>{};
 	exec_durations.resize(iteration_count);
 
+	auto progress_message = benchmark_progress_message{};
+	auto result_message = benchmark_result_message{};
+
 	for(auto i = 0; iteration_count > i; ++i) {
 		auto before = clock_t::now();
 		exec_systems_fn(reg_id, 1, nullptr, nullptr);
 		auto after = clock_t::now();
 
-		auto exec_duration =
-			std::chrono::duration_cast<std::chrono::nanoseconds>(before - after);
+		auto exec_duration = duration_cast<nanoseconds>(after - before);
 
 		exec_durations[i] = exec_duration;
+
+		result_message.total_duration_ms +=
+			duration_cast<duration<float, std::milli>>(exec_duration).count();
+		if(i % 100 == 0) {
+			progress_message.progress =
+				static_cast<float>(i) / static_cast<float>(iteration_count);
+			reporter.report(progress_message);
+		}
 	}
 
-	std::cout << "Done!\n";
+	result_message.average_duration_ms =
+		result_message.total_duration_ms / static_cast<float>(iteration_count);
+
+	progress_message.progress = 1.0f;
+	reporter.report(progress_message);
+	reporter.report(result_message);
 
 	return 0;
 }
