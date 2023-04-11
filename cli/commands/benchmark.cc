@@ -26,23 +26,28 @@ namespace fs = std::filesystem;
 constexpr auto USAGE = R"(Ecsact Benchmark Command
 
 Usage:
-	ecsact benchmark --runtime=<path> --seed=<path> <system_impl>...
+	ecsact benchmark <system_impl>... --runtime=<path> --seed=<path>
+		[--iterations=<count>] [--iteration_report_interval=<count>]
 )";
 
 constexpr auto OPTIONS = R"(Ecsact Benchmark Command
 Options:
-	--runtime=<path>
-		Path to built Ecsact Runtime typically one from ecsact_rtb.
-	--seed=<path>
-		Path to file containing entity seed data from an ecsact_dump_entities
-		call. The format must be compatible with the runtime because
-		ecsact_restore_entities will be called with said data.
 	<system_impl>
 		Path to Ecsact system implementation binaries. If the meta module is not
 		available on your runtime binary you must specify the system export name
 		and system ID in this format: `path;export-name,id`. Multiple exports
 		may be added in semi-colon (;) deliminated list.
 		NOTE: Only WebAssembly is allowed at this time.
+	--runtime=<path>
+		Path to built Ecsact Runtime typically one from ecsact_rtb.
+	--seed=<path>
+		Path to file containing entity seed data from an ecsact_dump_entities
+		call. The format must be compatible with the runtime because
+		ecsact_restore_entities will be called with said data.
+	--iterations=<count>  [default: 10000]
+		Number of times ecsact_execute_systems is called.
+	--iteration_report_interval=<count>  [default: 100]
+		How often an iteration progress is reported.
 )";
 
 struct info_message {
@@ -211,10 +216,36 @@ static auto print_last_error_if_available(
 	return true;
 }
 
+auto expect_docopt_value_long(
+	const auto&       args,
+	const std::string arg_name,
+	long              default_value
+) -> long {
+	const docopt::value& arg = args.at(arg_name);
+
+	if(!arg) {
+		return default_value;
+	}
+
+	try {
+		return arg.asLong();
+	} catch(const std::invalid_argument&) {
+		std::cerr //
+			<< "[ERROR] Expected integer for: " << arg_name << " instead got " << arg
+			<< "\n"
+			<< "For details run:\tecsact benchmark --help\n";
+		std::exit(1);
+	}
+}
+
 int ecsact::cli::detail::benchmark_command(int argc, char* argv[]) {
 	using clock_t = std::chrono::high_resolution_clock;
 
 	auto args = docopt::docopt(USAGE, {argv + 1, argv + argc});
+
+	auto iterations = expect_docopt_value_long(args, "--iterations", 10000L);
+	auto iteration_report_interval =
+		expect_docopt_value_long(args, "--iteration_report_interval", 100L);
 	auto runtime_path = args["--runtime"].asString();
 	auto seed_path = args["--seed"].asString();
 	auto system_impl_binaries =
@@ -309,14 +340,13 @@ int ecsact::cli::detail::benchmark_command(int argc, char* argv[]) {
 		return 1;
 	}
 
-	const auto iteration_count = 10000;
-	auto       exec_durations = std::vector<std::chrono::nanoseconds>{};
-	exec_durations.resize(iteration_count);
+	auto exec_durations = std::vector<std::chrono::nanoseconds>{};
+	exec_durations.resize(iterations);
 
 	auto progress_message = benchmark_progress_message{};
 	auto result_message = benchmark_result_message{};
 
-	for(auto i = 0; iteration_count > i; ++i) {
+	for(auto i = 0; iterations > i; ++i) {
 		auto before = clock_t::now();
 		exec_systems_fn(reg_id, 1, nullptr, nullptr);
 		auto after = clock_t::now();
@@ -327,15 +357,15 @@ int ecsact::cli::detail::benchmark_command(int argc, char* argv[]) {
 
 		result_message.total_duration_ms +=
 			duration_cast<duration<float, std::milli>>(exec_duration).count();
-		if(i % 100 == 0) {
+		if(i % iteration_report_interval == 0) {
 			progress_message.progress =
-				static_cast<float>(i) / static_cast<float>(iteration_count);
+				static_cast<float>(i) / static_cast<float>(iterations);
 			reporter.report(progress_message);
 		}
 	}
 
 	result_message.average_duration_ms =
-		result_message.total_duration_ms / static_cast<float>(iteration_count);
+		result_message.total_duration_ms / static_cast<float>(iterations);
 
 	progress_message.progress = 1.0f;
 	reporter.report(progress_message);
