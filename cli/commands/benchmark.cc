@@ -15,6 +15,7 @@
 #include "ecsact/runtime/core.h"
 #include "ecsact/runtime/core.hh"
 #include "ecsact/runtime/serialize.h"
+#include "ecsact/runtime/async.h"
 #include "ecsactsi_wasm.h"
 #include "magic_enum.hpp"
 
@@ -178,6 +179,7 @@ class stdout_json_benchmark_reporter {
 		to_json(message_json, message);
 		message_json["type"] = MessageT::type;
 		std::cout << message_json.dump() + "\n";
+		std::cout.flush();
 	}
 
 public:
@@ -331,9 +333,13 @@ auto report_entity_event_summary(
 
 int ecsact::cli::detail::benchmark_command(int argc, char* argv[]) {
 	using clock_t = std::chrono::high_resolution_clock;
+	using namespace std::string_literals;
+	using namespace std::chrono_literals;
 
 	auto args = docopt::docopt(USAGE, {argv + 1, argv + argc});
 
+	auto async = //
+		args["--async"] ? std::optional(args["--async"].asString()) : std::nullopt;
 	auto iterations = expect_docopt_value_long(args, "--iterations", 10000L);
 	auto iteration_report_interval =
 		expect_docopt_value_long(args, "--iteration_report_interval", 100L);
@@ -360,18 +366,6 @@ int ecsact::cli::detail::benchmark_command(int argc, char* argv[]) {
 		return ec.value();
 	}
 
-	const auto create_reg_fn = get_or_exit<decltype(ecsact_create_registry)>(
-		runtime,
-		"ecsact_create_registry"
-	);
-	const auto exec_systems_fn = get_or_exit<decltype(ecsact_execute_systems)>(
-		runtime,
-		"ecsact_execute_systems"
-	);
-	const auto restore_fn = get_or_exit<decltype(ecsact_restore_entities)>(
-		runtime,
-		"ecsact_restore_entities"
-	);
 	const auto wasm_load_file_fn = get_or_exit<decltype(ecsactsi_wasm_load_file)>(
 		runtime,
 		"ecsactsi_wasm_load_file"
@@ -434,45 +428,189 @@ int ecsact::cli::detail::benchmark_command(int argc, char* argv[]) {
 		return 1;
 	}
 
-	auto reg_id = create_reg_fn("BenchmarkRegistry");
-
-	auto restore_err = restore_fn(
-		reg_id,
-		[](void* out_data, int32_t data_max_length, void* ud) -> int32_t {
-			return std::fread(out_data, 1, data_max_length, static_cast<FILE*>(ud));
-		},
-		nullptr,
-		seed_file
-	);
-
-	if(restore_err != ECSACT_RESTORE_OK) {
-		std::cerr //
-			<< "Seed entities failed to restore: "
-			<< magic_enum::enum_name(restore_err) << "\n";
-		return 1;
-	}
-
-	auto exec_durations = std::vector<std::chrono::nanoseconds>{};
-	exec_durations.resize(iterations);
-
 	auto progress_message = benchmark_progress_message{};
 	auto result_message = benchmark_result_message{};
 
-	for(auto i = 0; iterations > i; ++i) {
-		auto before = clock_t::now();
-		exec_systems_fn(reg_id, 1, nullptr, &evc);
-		auto after = clock_t::now();
+	if(async) {
+		const auto async_connect_fn = get_or_exit<decltype(ecsact_async_connect)>(
+			runtime,
+			"ecsact_async_connect"
+		);
+		const auto async_disconnect_fn =
+			get_or_exit<decltype(ecsact_async_disconnect)>(
+				runtime,
+				"ecsact_async_disconnect"
+			);
+		const auto async_flush_fn =
+			get_or_exit<decltype(ecsact_async_flush_events)>(
+				runtime,
+				"ecsact_async_flush_events"
+			);
+		const auto async_enqueue_exec_options_fn =
+			get_or_exit<decltype(ecsact_async_enqueue_execution_options)>(
+				runtime,
+				"ecsact_async_enqueue_execution_options"
+			);
+		const auto async_get_current_tick =
+			get_or_exit<decltype(ecsact_async_get_current_tick)>(
+				runtime,
+				"ecsact_async_get_current_tick"
+			);
 
-		auto exec_duration = duration_cast<nanoseconds>(after - before);
+		const auto restore_as_exec_options_fn =
+			get_or_exit<decltype(ecsact_restore_as_execution_options)>(
+				runtime,
+				"ecsact_restore_as_execution_options"
+			);
 
-		exec_durations[i] = exec_duration;
+		auto& connect_string = async.value();
 
-		result_message.total_duration_ms +=
-			duration_cast<duration<float, std::milli>>(exec_duration).count();
-		if(i % iteration_report_interval == 0) {
-			progress_message.progress =
-				static_cast<float>(i) / static_cast<float>(iterations);
-			reporter.report(progress_message);
+		reporter.report(info_message{"Async Connect: " + connect_string});
+
+		struct {
+			ecsact_async_request_id                 connect_req_id;
+			decltype(reporter)&                     reporter;
+			bool                                    done;
+			decltype(async_enqueue_exec_options_fn) async_enqueue_exec_options_fn;
+		} vars{
+			.connect_req_id = async_connect_fn(connect_string.c_str()),
+			.reporter = reporter,
+			.done = false,
+			.async_enqueue_exec_options_fn = async_enqueue_exec_options_fn,
+		};
+
+		auto async_evc = ecsact_async_events_collector{};
+		async_evc.system_error_callback = //
+			[](ecsact_execute_systems_error, void*) {};
+		async_evc.system_error_callback_user_data = nullptr;
+
+		async_evc.async_error_callback_user_data = &vars;
+		async_evc.async_error_callback = //
+			[](
+				ecsact_async_error       err,
+				int32_t                  req_ids_count,
+				ecsact_async_request_id* req_ids_raw,
+				void*                    user_data
+			) {
+				auto vars_ptr = static_cast<decltype(&vars)>(user_data);
+				auto req_ids =
+					std::span{req_ids_raw, static_cast<size_t>(req_ids_count)};
+
+				for(auto& req_id : req_ids) {
+					if(req_id == vars_ptr->connect_req_id) {
+						vars_ptr->reporter.report(error_message{
+							"Async connect failed: "s +
+								std::string(magic_enum::enum_name(err)),
+						});
+					} else {
+						vars_ptr->reporter.report(error_message{
+							"Async error (req="s + std::to_string(static_cast<int>(req_id)) +
+								"): "s + std::string(magic_enum::enum_name(err)),
+						});
+					}
+				}
+
+				vars_ptr->done = true;
+			};
+
+		// NOTE: There is no way to tell when a connect has successfully occured
+		//       https://github.com/ecsact-dev/ecsact_runtime/issues/102
+		std::this_thread::sleep_for(1s);
+
+		auto restore_err = restore_as_exec_options_fn(
+			[](void* out_data, int32_t data_max_length, void* ud) -> int32_t {
+				return std::fread(out_data, 1, data_max_length, static_cast<FILE*>(ud));
+			},
+			seed_file,
+			[](ecsact_execution_options exec_options, void* ud) {
+				static_cast<decltype(&vars)>(ud)->async_enqueue_exec_options_fn(
+					exec_options
+				);
+			},
+			&vars
+		);
+
+		if(restore_err != ECSACT_RESTORE_OK) {
+			std::cerr //
+				<< "Seed entities failed to restore: "
+				<< magic_enum::enum_name(restore_err) << "\n";
+			return 1;
+		}
+
+		auto async_start = clock_t::now();
+		while(!vars.done) {
+			std::this_thread::yield();
+
+			async_flush_fn(&evc, &async_evc);
+			auto tick = async_get_current_tick();
+
+			if(tick % iteration_report_interval == 0) {
+				progress_message.progress =
+					static_cast<float>(tick) / static_cast<float>(iterations);
+				reporter.report(progress_message);
+			}
+
+			if(tick >= iterations) {
+				break;
+			}
+		}
+
+		result_message.total_duration_ms =
+			duration_cast<duration<float, std::milli>>(clock_t::now() - async_start)
+				.count();
+
+		async_disconnect_fn();
+	} else {
+		const auto create_reg_fn = get_or_exit<decltype(ecsact_create_registry)>(
+			runtime,
+			"ecsact_create_registry"
+		);
+		const auto exec_systems_fn = get_or_exit<decltype(ecsact_execute_systems)>(
+			runtime,
+			"ecsact_execute_systems"
+		);
+		const auto restore_fn = get_or_exit<decltype(ecsact_restore_entities)>(
+			runtime,
+			"ecsact_restore_entities"
+		);
+
+		auto reg_id = create_reg_fn("BenchmarkRegistry");
+
+		auto restore_err = restore_fn(
+			reg_id,
+			[](void* out_data, int32_t data_max_length, void* ud) -> int32_t {
+				return std::fread(out_data, 1, data_max_length, static_cast<FILE*>(ud));
+			},
+			nullptr,
+			seed_file
+		);
+
+		if(restore_err != ECSACT_RESTORE_OK) {
+			std::cerr //
+				<< "Seed entities failed to restore: "
+				<< magic_enum::enum_name(restore_err) << "\n";
+			return 1;
+		}
+
+		auto exec_durations = std::vector<std::chrono::nanoseconds>{};
+		exec_durations.resize(iterations);
+
+		for(auto i = 0; iterations > i; ++i) {
+			auto before = clock_t::now();
+			exec_systems_fn(reg_id, 1, nullptr, &evc);
+			auto after = clock_t::now();
+
+			auto exec_duration = duration_cast<nanoseconds>(after - before);
+
+			exec_durations[i] = exec_duration;
+
+			result_message.total_duration_ms +=
+				duration_cast<duration<float, std::milli>>(exec_duration).count();
+			if(i % iteration_report_interval == 0) {
+				progress_message.progress =
+					static_cast<float>(i) / static_cast<float>(iterations);
+				reporter.report(progress_message);
+			}
 		}
 	}
 
