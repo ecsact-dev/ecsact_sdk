@@ -13,6 +13,7 @@
 #include "docopt.h"
 #include "nlohmann/json.hpp"
 #include "ecsact/runtime/core.h"
+#include "ecsact/runtime/core.hh"
 #include "ecsact/runtime/serialize.h"
 #include "ecsactsi_wasm.h"
 #include "magic_enum.hpp"
@@ -27,10 +28,11 @@ constexpr auto USAGE = R"(Ecsact Benchmark Command
 
 Usage:
 	ecsact benchmark <system_impl>... --runtime=<path> --seed=<path>
+		[--async=<connect_string>] [--events=summary]
 		[--iterations=<count>] [--iteration_report_interval=<count>]
 )";
 
-constexpr auto OPTIONS = R"(Ecsact Benchmark Command
+constexpr auto OPTIONS = R"(
 Options:
 	<system_impl>
 		Path to Ecsact system implementation binaries. If the meta module is not
@@ -44,8 +46,14 @@ Options:
 		Path to file containing entity seed data from an ecsact_dump_entities
 		call. The format must be compatible with the runtime because
 		ecsact_restore_entities will be called with said data.
+	--async=<connect_string>
+		Connect to an async runtime via <connect_string> instead of executing.
+	--events=summary
+		End of benchmark will give a report of how many of each event occured
+		during the benchmark.
 	--iterations=<count>  [default: 10000]
-		Number of times ecsact_execute_systems is called.
+		Number of times ecsact_execute_systems is called or in the case of async
+		number of ticks that pass until disconnect.
 	--iteration_report_interval=<count>  [default: 100]
 		How often an iteration progress is reported.
 )";
@@ -94,12 +102,74 @@ struct benchmark_result_message {
 	);
 };
 
+struct component_event_report_item {
+	ecsact_event        event = {};
+	ecsact_component_id component_id = {};
+	int                 count = 0;
+
+	NLOHMANN_DEFINE_TYPE_INTRUSIVE(
+		component_event_report_item,
+		event,
+		component_id,
+		count
+	);
+};
+
+struct entity_event_report_item {
+	ecsact_event event = {};
+	int          count = 0;
+
+	NLOHMANN_DEFINE_TYPE_INTRUSIVE(entity_event_report_item, event, count);
+};
+
+struct event_summary_report_message {
+	static constexpr auto type = "event_summary";
+
+	std::vector<component_event_report_item> component_events;
+	std::vector<entity_event_report_item>    entity_events;
+
+	inline auto component_report(ecsact_event event, ecsact_component_id comp_id)
+		-> component_event_report_item& {
+		for(auto& entry : component_events) {
+			if(entry.event == event && entry.component_id == comp_id) {
+				return entry;
+			}
+		}
+
+		auto& result = component_events.emplace_back();
+		result.component_id = comp_id;
+		result.event = event;
+
+		return result;
+	}
+
+	inline auto entity_report(ecsact_event event) -> entity_event_report_item& {
+		for(auto& entry : entity_events) {
+			if(entry.event == event) {
+				return entry;
+			}
+		}
+
+		auto& result = entity_events.emplace_back();
+		result.event = event;
+
+		return result;
+	}
+
+	NLOHMANN_DEFINE_TYPE_INTRUSIVE(
+		event_summary_report_message,
+		component_events,
+		entity_events
+	);
+};
+
 using benchmark_message_variant_t = std::variant<
 	info_message,
 	warning_message,
 	error_message,
 	benchmark_progress_message,
-	benchmark_result_message>;
+	benchmark_result_message,
+	event_summary_report_message>;
 
 class stdout_json_benchmark_reporter {
 	template<typename MessageT>
@@ -238,6 +308,27 @@ auto expect_docopt_value_long(
 	}
 }
 
+auto report_component_event_summary(
+	ecsact_event        event,
+	ecsact_entity_id    _entity_id,
+	ecsact_component_id component_id,
+	const void*         _component_data,
+	void*               user_data
+) -> void {
+	auto summary_report = static_cast<event_summary_report_message*>(user_data);
+	summary_report->component_report(event, component_id).count += 1;
+}
+
+auto report_entity_event_summary(
+	ecsact_event                 event,
+	ecsact_entity_id             _entity_id,
+	ecsact_placeholder_entity_id _placeholder_entity_id,
+	void*                        user_data
+) -> void {
+	auto summary_report = static_cast<event_summary_report_message*>(user_data);
+	summary_report->entity_report(event).count += 1;
+}
+
 int ecsact::cli::detail::benchmark_command(int argc, char* argv[]) {
 	using clock_t = std::chrono::high_resolution_clock;
 
@@ -316,6 +407,27 @@ int ecsact::cli::detail::benchmark_command(int argc, char* argv[]) {
 		}
 	}
 
+	auto evc = ecsact_execution_events_collector{};
+	auto event_summary = std::optional<event_summary_report_message>{};
+
+	if(args["--events"]) {
+		auto event_summary_ptr = &event_summary.emplace();
+		evc.init_callback = &report_component_event_summary;
+		evc.init_callback_user_data = event_summary_ptr;
+
+		evc.update_callback = &report_component_event_summary;
+		evc.update_callback_user_data = event_summary_ptr;
+
+		evc.remove_callback = &report_component_event_summary;
+		evc.remove_callback_user_data = event_summary_ptr;
+
+		evc.entity_created_callback = &report_entity_event_summary;
+		evc.entity_created_callback_user_data = event_summary_ptr;
+
+		evc.entity_destroyed_callback = &report_entity_event_summary;
+		evc.entity_destroyed_callback_user_data = event_summary_ptr;
+	}
+
 	auto seed_file = std::fopen(seed_path.c_str(), "r");
 	if(seed_file == nullptr) {
 		std::cerr << "Failed to open seed path: " << seed_path << "\n";
@@ -348,7 +460,7 @@ int ecsact::cli::detail::benchmark_command(int argc, char* argv[]) {
 
 	for(auto i = 0; iterations > i; ++i) {
 		auto before = clock_t::now();
-		exec_systems_fn(reg_id, 1, nullptr, nullptr);
+		exec_systems_fn(reg_id, 1, nullptr, &evc);
 		auto after = clock_t::now();
 
 		auto exec_duration = duration_cast<nanoseconds>(after - before);
@@ -369,6 +481,11 @@ int ecsact::cli::detail::benchmark_command(int argc, char* argv[]) {
 
 	progress_message.progress = 1.0f;
 	reporter.report(progress_message);
+
+	if(event_summary.has_value()) {
+		reporter.report(event_summary.value());
+	}
+
 	reporter.report(result_message);
 
 	return 0;
