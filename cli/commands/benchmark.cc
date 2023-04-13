@@ -472,17 +472,24 @@ int ecsact::cli::detail::benchmark_command(int argc, char* argv[]) {
 			decltype(reporter)&                     reporter;
 			bool                                    done;
 			decltype(async_enqueue_exec_options_fn) async_enqueue_exec_options_fn;
+			ecsact_async_request_id                 restore_enqueue_req_id;
 		} vars{
 			.connect_req_id = async_connect_fn(connect_string.c_str()),
 			.reporter = reporter,
 			.done = false,
 			.async_enqueue_exec_options_fn = async_enqueue_exec_options_fn,
+			.restore_enqueue_req_id = {},
 		};
 
 		auto async_evc = ecsact_async_events_collector{};
+		async_evc.system_error_callback_user_data = &vars;
 		async_evc.system_error_callback = //
-			[](ecsact_execute_systems_error, void*) {};
-		async_evc.system_error_callback_user_data = nullptr;
+			[](ecsact_execute_systems_error err, void* user_data) {
+				auto vars_ptr = static_cast<decltype(&vars)>(user_data);
+				vars_ptr->reporter.report(error_message{
+					"System Execution Error: " + std::string(magic_enum::enum_name(err)),
+				});
+			};
 
 		async_evc.async_error_callback_user_data = &vars;
 		async_evc.async_error_callback = //
@@ -523,9 +530,10 @@ int ecsact::cli::detail::benchmark_command(int argc, char* argv[]) {
 			},
 			seed_file,
 			[](ecsact_execution_options exec_options, void* ud) {
-				static_cast<decltype(&vars)>(ud)->async_enqueue_exec_options_fn(
-					exec_options
-				);
+				auto vars_ptr = static_cast<decltype(&vars)>(ud);
+
+				vars_ptr->restore_enqueue_req_id =
+					vars_ptr->async_enqueue_exec_options_fn(exec_options);
 			},
 			&vars
 		);
@@ -551,6 +559,9 @@ int ecsact::cli::detail::benchmark_command(int argc, char* argv[]) {
 			}
 
 			if(tick >= iterations) {
+				reporter.report(info_message{
+					"Async benchmark ended at tick " + std::to_string(tick),
+				});
 				break;
 			}
 		}
