@@ -434,7 +434,7 @@ auto start_async_benchmark(
 		};
 
 	// NOTE: There is no way to tell when a connect has successfully occured
-	//       https://github.com/ecsact-dev/ecsact_options.runtime/issues/102
+	//       https://github.com/ecsact-dev/ecsact_runtime/issues/102
 	std::this_thread::sleep_for(1s);
 
 	auto restore_err = restore_as_exec_options_fn(
