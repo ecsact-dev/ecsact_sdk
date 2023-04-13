@@ -386,12 +386,14 @@ auto start_async_benchmark(
 		ecsact_async_request_id                 connect_req_id;
 		decltype(options.reporter)&             reporter;
 		bool                                    done;
+		bool                                    connected;
 		decltype(async_enqueue_exec_options_fn) async_enqueue_exec_options_fn;
 		ecsact_async_request_id                 restore_enqueue_req_id;
 	} vars{
 		.connect_req_id = async_connect_fn(connect_string.c_str()),
 		.reporter = options.reporter,
 		.done = false,
+		.connected = false,
 		.async_enqueue_exec_options_fn = async_enqueue_exec_options_fn,
 		.restore_enqueue_req_id = {},
 	};
@@ -432,10 +434,34 @@ auto start_async_benchmark(
 
 			vars_ptr->done = true;
 		};
+	async_evc.async_request_done_callback_user_data = &vars;
+	async_evc.async_request_done_callback = //
+		[](
+			int32_t                  req_ids_count,
+			ecsact_async_request_id* req_ids_raw,
+			void*                    user_data
+		) {
+			auto vars_ptr = static_cast<decltype(&vars)>(user_data);
+			auto req_ids = std::span{req_ids_raw, static_cast<size_t>(req_ids_count)};
 
-	// NOTE: There is no way to tell when a connect has successfully occured
-	//       https://github.com/ecsact-dev/ecsact_runtime/issues/102
-	std::this_thread::sleep_for(1s);
+			for(auto req_id : req_ids) {
+				if(req_id == vars_ptr->connect_req_id) {
+					vars_ptr->connected = true;
+					vars_ptr->reporter.report(info_message{
+						"Async successfully connected",
+					});
+				}
+			}
+		};
+
+	while(!vars.connected) {
+		std::this_thread::yield();
+		async_flush_fn(&options.evc, &async_evc);
+	}
+
+	if(vars.done) {
+		return {};
+	}
 
 	auto restore_err = restore_as_exec_options_fn(
 		[](void* out_data, int32_t data_max_length, void* ud) -> int32_t {
