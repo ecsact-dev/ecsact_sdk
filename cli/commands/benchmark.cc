@@ -31,6 +31,7 @@ using benchmark_clock_t = std::chrono::high_resolution_clock;
 constexpr auto USAGE = R"(Ecsact Benchmark Command
 
 Usage:
+	ecsact benchmark (-h | --help)
 	ecsact benchmark <system_impl>... --runtime=<path> --seed=<path>
 		[--async=<connect_string>] [--events=summary]
 		[--iterations=<count>] [--iteration_report_interval=<count>]
@@ -584,7 +585,12 @@ int ecsact::cli::detail::benchmark_command(int argc, char* argv[]) {
 	using namespace std::string_literals;
 	using namespace std::chrono_literals;
 
-	auto args = docopt::docopt(USAGE, {argv + 1, argv + argc});
+	auto args = docopt::docopt(USAGE, {argv + 1, argv + argc}, false);
+
+	if(args["--help"]) {
+		std::cout << USAGE << OPTIONS;
+		return 0;
+	}
 
 	auto async = //
 		args["--async"] ? std::optional(args["--async"].asString()) : std::nullopt;
