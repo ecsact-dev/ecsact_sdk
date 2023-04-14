@@ -676,7 +676,6 @@ int ecsact::cli::detail::benchmark_command(int argc, char* argv[]) {
 		return 1;
 	}
 
-	auto progress_message = benchmark_progress_message{};
 	auto benchmark_options = common_benchmark_options{
 		.runtime = runtime,
 		.reporter = reporter,
