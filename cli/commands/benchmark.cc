@@ -8,6 +8,7 @@
 #include <chrono>
 #include <ranges>
 #include <variant>
+#include <thread>
 #include <boost/dll/shared_library.hpp>
 #include <boost/dll/library_info.hpp>
 #include "docopt.h"
