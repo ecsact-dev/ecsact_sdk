@@ -587,7 +587,7 @@ int ecsact::cli::detail::benchmark_command(int argc, char* argv[]) {
 
 	auto args = docopt::docopt(USAGE, {argv + 1, argv + argc}, false);
 
-	if(args["--help"]) {
+	if(args["--help"] && args["--help"].asBool()) {
 		std::cout << USAGE << OPTIONS;
 		return 0;
 	}
