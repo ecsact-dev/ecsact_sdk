@@ -146,17 +146,3 @@ jobs:
           name: ${{github.ref_name}}
           generate_release_notes: true
 
-  notify-website:
-    runs-on: ubuntu-latest
-    needs:
-      - release-finish
-    steps:
-      - uses: actions/github-script@v6
-        with:
-          script: |
-            github.rest.actions.createWorkflowDispatch({
-              owner: context.repo.owner,
-              repo: 'website',
-              workflow_id: 'update_ecsact_sdk.yml',
-              ref: 'main',
-            })
