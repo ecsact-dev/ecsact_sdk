@@ -111,6 +111,13 @@ http_archive(
     url = "https://github.com/ecsact-dev/ecsact_lsp_server/archive/refs/tags/0.1.0.tar.gz",
 )
 
+http_archive(
+    name = "ecsact_cli",
+    sha256 = "76239edb31727f7ac5f510ff1ef8eed36f9b6ebf9380c531f915dd69cbeec385",
+    strip_prefix = "ecsact_cli-0.1.0",
+    urls = ["https://github.com/ecsact-dev/ecsact_cli/archive/refs/tags/0.1.0.tar.gz"],
+)
+
 load("@ecsact_parse//:repositories.bzl", "ecsact_parse_dependencies")
 
 ecsact_parse_dependencies()
