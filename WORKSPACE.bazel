@@ -49,6 +49,13 @@ http_archive(
 )
 
 http_archive(
+    name = "ecsact_codegen",
+    sha256 = "5a1a466dbddbe042c2e5910f3b65ca44a5ffcef5831fdd0c3b2e2863c13cfb31",
+    strip_prefix = "ecsact_codegen-0.0.2",
+    urls = ["https://github.com/ecsact-dev/ecsact_codegen/archive/refs/tags/0.0.2.tar.gz"],
+)
+
+http_archive(
     name = "ecsact_parse",
     sha256 = "706066e8870aa07f6937ca5f3187c7f3bb970255d028790b5f441e24e22d37f6",
     strip_prefix = "ecsact_parse-0.2.1",
