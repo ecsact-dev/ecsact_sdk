@@ -4,7 +4,7 @@
 
 # Ecsact SDK
 
-This repository containsscripts for creating our releases. Majority of source code is in our [other repositories](https://github.com/orgs/ecsact-dev/repositories).
+This repository contains scripts for creating our releases. Majority of source code is in our [other repositories](https://github.com/orgs/ecsact-dev/repositories).
 
 ## Ecsact Documentation and Guides
 
