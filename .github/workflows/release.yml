@@ -37,6 +37,8 @@ jobs:
   windows-x64-binaries:
     runs-on: windows-latest
     steps:
+      - name: bazel visual studio 17.6 workaround # https://github.com/bazelbuild/bazel/issues/18592
+        run: Remove-Item -Path "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\vcpkg" -Force -Recurse
       - uses: actions/cache@v3
         with:
           path: |

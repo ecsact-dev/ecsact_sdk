@@ -29,7 +29,6 @@ jobs:
       - uses: actions/checkout@v3
       - run: bazel build --config=ci ...
   build-windows:
-    # SEE: https://github.com/bazelbuild/bazel/issues/18592
     runs-on: windows-latest
     steps:
       - name: bazel visual studio 17.6 workaround # https://github.com/bazelbuild/bazel/issues/18592
