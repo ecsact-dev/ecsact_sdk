@@ -12,8 +12,15 @@
 # ecsact codegen
 *.ecsact.*
 
-# MSIX distribution folder
+# Distribution files
 /dist/*
+
+# MSIX distribution folder
 !/dist/AppxManifest.xml
 *.msix
 *.zip
+
+# Debian distribution
+!/dist/DEBIAN
+*.deb
+*.tar.gz

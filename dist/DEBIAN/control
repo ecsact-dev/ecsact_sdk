@@ -1,0 +1,5 @@
+Package: ecsact-sdk
+Version: 0.0.0-placeholder
+Architecture: amd64
+Maintainer: Ezekiel Warren <ezekiel@seaube.com>
+Description: Ecsact SDK
