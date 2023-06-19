@@ -23,4 +23,4 @@
 # Debian distribution
 !/dist/DEBIAN
 *.deb
-
+*.tar.gz
