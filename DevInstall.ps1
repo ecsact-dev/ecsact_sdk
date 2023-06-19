@@ -13,7 +13,7 @@ $IncrementedVersion = $GitTagSplit[0] + "." + $GitTagSplit[1] + "." + (([int]$Gi
 
 . .\CopyDist.ps1
 
-if ([System.Environment]::OSVersion.Platform == 'Unix') {
+if ([System.Environment]::OSVersion.Platform -eq 'Unix') {
 	# TODO(zaucy): Check if developer machine can install .deb files and give
 	# a nice error if they can't.
 	. ./CreateDeb.ps1 -Version $IncrementedVersion
