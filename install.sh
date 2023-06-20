@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 # This install script is intended to download and install the latest available
 # release of the Ecsact SDK.
@@ -103,21 +103,28 @@ install_ecsact_sdk_deb_package() {
 }
 
 confirm_or_exit() {
+	if ! [ -t 0 ]; then
+		printf "$1 [y/N] ${green}Yes ${dim}(non-interactive)${reset}\n"
+		return 0
+	fi
+
 	if [ -n "$BASH_VERSION" ]; then
 		read -p "$1 [y/N] " -n 1 -r
-		echo
 		if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-			printf "installation aborted\n"
+			printf "${red}\bNo${reset}\n"
 			return 1
 		fi
+
+		printf "${green}\bYes${reset}\n"
+
 		return 0
 	fi
 
 	read -p "$1 [y/N] " yn
 	case $yn in
-		[Yy]*) break                                      ;;
-		[Nn]*) printf "${red}Installation aborted${reset}\n"; return 1  ;;
-		*)     printf "${red}Installation aborted${reset}\n"; return 1  ;;
+		[Yy]*) printf "${green}Yes${reset}\n" break;                      ;;
+		[Nn]*) printf "${red}No${reset}\n"; return 1                      ;;
+		*)     printf "\n${red}Installation aborted${reset}\n"; return 1  ;;
 	esac
 
 	return 0
@@ -153,5 +160,4 @@ ${reset}
 
 init_env_vars
 install_ecsact_sdk
-unset -f init_env_vars install_ecsact_sdk download_json download_file install_ecsact_sdk_deb_package confirm_or_exit
 
