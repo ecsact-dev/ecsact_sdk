@@ -13,6 +13,10 @@ try {
 	rm -rf ./dist/images
 	rm ./dist/AppxManifest.xml
 	rm -f ./dist/bin/ecsact_rtb.runfiles/ecsact_cli/ecsact
+	mkdir ./dist/usr
+	mv ./dist/bin ./dist/usr/bin
+	mv ./dist/share ./dist/usr/share
+	mv ./dist/include ./dist/usr/include
 	dpkg-deb --build --root-owner-group ./dist $DebPath
 } finally {
 	git checkout ./dist/DEBIAN/control
