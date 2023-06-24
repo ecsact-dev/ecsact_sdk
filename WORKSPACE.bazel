@@ -35,10 +35,17 @@ http_archive(
 )
 
 http_archive(
+    name = "rules_ecsact",
+    sha256 = "3db6d498a681e036dabdcc1bb7e5ee254acadae4ab2ecf19d253f824db88d5e4",
+    strip_prefix = "rules_ecsact-0.3.0",
+    urls = ["https://github.com/ecsact-dev/rules_ecsact/archive/refs/tags/0.3.0.tar.gz"],
+)
+
+http_archive(
     name = "ecsact_rt_entt",
-    sha256 = "dddf4534b302aebf3801062fb992d1e247dc8af213f830dcb76da4222a5dec09",
-    strip_prefix = "ecsact_rt_entt-0.1.0",
-    urls = ["https://github.com/ecsact-dev/ecsact_rt_entt/archive/refs/tags/0.1.0.tar.gz"],
+    sha256 = "7608497049cfca47f283ab0a7e8a6490d5a75033c9e732150284afc806f20b6d",
+    strip_prefix = "ecsact_rt_entt-0.2.0",
+    urls = ["https://github.com/ecsact-dev/ecsact_rt_entt/archive/refs/tags/0.2.0.tar.gz"],
 )
 
 http_archive(
