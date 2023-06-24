@@ -95,6 +95,7 @@ jobs:
       - common-dist
       - linux-x64-binaries
     steps:
+      - uses: actions/checkout@v3
       - uses: actions/download-artifact@v3
         with:
           name: common-dist
