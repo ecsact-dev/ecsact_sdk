@@ -2,6 +2,6 @@ module(name = "ecsact_sdk")
 
 bazel_dep(name = "nlohmann_json", version = "3.11.2")
 bazel_dep(name = "rules_cc", version = "0.0.8")
-bazel_dep(name = "platforms", version = "0.0.6")
+bazel_dep(name = "platforms", version = "0.0.7")
 bazel_dep(name = "rules_pkg", version = "0.9.1")
 bazel_dep(name = "bazel_skylib", version = "1.4.2")
