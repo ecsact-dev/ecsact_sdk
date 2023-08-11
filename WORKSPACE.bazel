@@ -171,9 +171,9 @@ setup_7zip()
 
 http_archive(
     name = "rules_blender",
-    sha256 = "8422da8ba9836bd1c179a22fa53b588ecbf292fdfeb29d47199a0808a6cc0156",
-    strip_prefix = "rules_blender-d43141a665363eeeec33d040519c36e772cf95f5",
-    urls = ["https://github.com/zaucy/rules_blender/archive/d43141a665363eeeec33d040519c36e772cf95f5.zip"],
+    sha256 = "05acad9716ec6c80cadb603e7f585acbaadf670bce6920959824122e25e97e9c",
+    strip_prefix = "rules_blender-dc8c77bdb27e4af7cb1c95610a119a8ad64e57c7",
+    urls = ["https://github.com/zaucy/rules_blender/archive/dc8c77bdb27e4af7cb1c95610a119a8ad64e57c7.zip"],
 )
 
 load("@rules_blender//:repo.bzl", "blender_repository")
