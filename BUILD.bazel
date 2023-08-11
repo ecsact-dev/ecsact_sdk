@@ -4,7 +4,7 @@ load("@bzlws//:index.bzl", "bzlws_copy", "bzlws_extract")
 
 pkg_executable(
     name = "ecsact_rtb_runfiles",
-    bin = "@ecsact_cli",
+    bin = "@ecsact_rtb//cli:ecsact_rtb",
     path = "ecsact_rtb",
 )
 
