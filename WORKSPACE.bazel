@@ -50,9 +50,9 @@ http_archive(
 
 http_archive(
     name = "ecsact_rtb",
-    sha256 = "ce8b2dc6505af7c160c0f0c02d14e1003d89d61ca0d87427ab4db32ba6bc793d",
-    strip_prefix = "ecsact_rtb-0.1.0",
-    url = "https://github.com/ecsact-dev/ecsact_rtb/archive/refs/tags/0.1.0.tar.gz",
+    sha256 = "b48d7b8a64e6d6435d98f2770ac207fa0de501c5be0a0b123fd506911ebdf948",
+    strip_prefix = "ecsact_rtb-0.2.0",
+    url = "https://github.com/ecsact-dev/ecsact_rtb/archive/refs/tags/0.2.0.tar.gz",
 )
 
 http_archive(
