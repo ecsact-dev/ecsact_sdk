@@ -36,9 +36,9 @@ http_archive(
 
 http_archive(
     name = "rules_ecsact",
-    sha256 = "3db6d498a681e036dabdcc1bb7e5ee254acadae4ab2ecf19d253f824db88d5e4",
-    strip_prefix = "rules_ecsact-0.3.0",
-    urls = ["https://github.com/ecsact-dev/rules_ecsact/archive/refs/tags/0.3.0.tar.gz"],
+    sha256 = "a96d50bc5342398040ceb132f985e07096c0e3ec9784e124e3dbca30bce75cf7",
+    strip_prefix = "rules_ecsact-0.4.4",
+    urls = ["https://github.com/ecsact-dev/rules_ecsact/archive/refs/tags/0.4.4.tar.gz"],
 )
 
 http_archive(
