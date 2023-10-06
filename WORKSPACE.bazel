@@ -22,9 +22,9 @@ boost_http_archives()
 
 http_archive(
     name = "rules_cc_stamp",
-    strip_prefix = "rules_cc_stamp-63d4861f4d420b574fa0f112599aae2b8aee785e",
-    urls = ["https://github.com/zaucy/rules_cc_stamp/archive/63d4861f4d420b574fa0f112599aae2b8aee785e.zip"],
-    sha256 = "f469a3b97eeabeb850c655f59ea17799ff40badd3a0b3e9de38534c89ad2f87d",
+    strip_prefix = "rules_cc_stamp-2f8b52eae4e7e52c3f5573d79db37eaac296289e",
+    urls = ["https://github.com/zaucy/rules_cc_stamp/archive/2f8b52eae4e7e52c3f5573d79db37eaac296289e.zip"],
+    sha256 = "8ed2f5ee3576958339568847cd54ed981f39acf610b7ded3c5eb5582e6ab7d00",
 )
 
 http_archive(
