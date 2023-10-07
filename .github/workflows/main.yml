@@ -14,7 +14,7 @@ jobs:
     name: Formatting Check
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: jidicula/clang-format-action@v4.9.0
         with: { clang-format-version: "15" }
   build:
@@ -26,7 +26,7 @@ jobs:
             ~/.cache/bazelisk
             ~/.cache/bazel-disk-cache
           key: ${{runner.os}}-bazel-cache
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - run: bazel build --config=ci ...
   build-windows:
     runs-on: windows-latest
@@ -39,7 +39,7 @@ jobs:
             /Users/runneradmin/AppData/Local/bazelisk
             /Users/runneradmin/.cache/bazel-disk-cache
           key: ${{runner.os}}-bazel-cache
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - run: bazel build --config=ci //...
   check-dist:
     runs-on: ubuntu-latest
@@ -50,5 +50,5 @@ jobs:
             ~/.cache/bazelisk
             ~/.cache/bazel-disk-cache
           key: ${{runner.os}}-bazel-cache
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - run: ./CheckDist.sh
