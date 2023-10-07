@@ -21,6 +21,7 @@ query --@ecsact_cli//:use_sdk_version
 
 build:windows --workspace_status_command=bazel/tools/wsc.cmd
 build:linux --workspace_status_command=bazel/tools/wsc.sh
+build:linux --linkopt=-lc++experimental
 
 # Temporary until https://github.com/grailbio/bazel-toolchain/pull/198 is merged
 build:linux --extra_toolchains=@llvm_toolchain//:cc-toolchain-x86_64-linux
