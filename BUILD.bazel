@@ -2,30 +2,10 @@ load(":pkg.bzl", "pkg_executable")
 load("@rules_pkg//pkg:tar.bzl", "pkg_tar")
 load("@bzlws//:index.bzl", "bzlws_copy", "bzlws_extract")
 
-pkg_executable(
-    name = "ecsact_rtb_runfiles",
-    bin = "@ecsact_rtb//cli:ecsact_rtb",
-    path = "ecsact_rtb",
-)
-
-pkg_tar(
-    name = "runfiles_tar",
-    srcs = [":ecsact_rtb_runfiles"],
-)
-
-bzlws_extract(
-    name = "copy_runfiles",
-    testonly = True,
-    srcs = [":runfiles_tar"],
-    out = "dist/bin",
-    force = True,
-)
-
 bzlws_copy(
     name = "copy_dist_bin",
     srcs = [
         "@ecsact_cli",
-        "@ecsact_rtb//cli:ecsact_rtb",
         "@ecsact_lsp_server",
     ],
     out = "dist/bin/{FILENAME}",

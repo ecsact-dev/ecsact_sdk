@@ -1,18 +1,29 @@
+startup --windows_enable_symlinks
 common --enable_bzlmod
+common --registry=https://raw.githubusercontent.com/ecsact-dev/bazel_registry/main
+common --registry=https://raw.githubusercontent.com/bazelboost/registry/main
+common --registry=https://bcr.bazel.build
 build --enable_platform_specific_config
 build --incompatible_use_platforms_repo_for_constraints
 build --incompatible_enable_cc_toolchain_resolution
 build --incompatible_strict_action_env
 build --enable_runfiles
+build --noincompatible_remove_rule_name_parameter
+query --noincompatible_remove_rule_name_parameter
 
-build:windows --platforms=//bazel/platforms:windows
-build:windows --host_platform=//bazel/platforms:windows
+build --@boost.dll//:use_std_fs
+build --@boost.process//:use_std_fs
+query --@boost.dll//:use_std_fs
+query --@boost.process//:use_std_fs
+
+build --@ecsact_cli//:use_sdk_version
+query --@ecsact_cli//:use_sdk_version
+
 build:windows --workspace_status_command=bazel/tools/wsc.cmd
-
-build:linux --platforms=//bazel/platforms:linux
-build:linux --host_platform=//bazel/platforms:linux
-build:linux --extra_toolchains=@llvm_toolchain//:cc-toolchain-x86_64-linux
 build:linux --workspace_status_command=bazel/tools/wsc.sh
+
+# Temporary until https://github.com/grailbio/bazel-toolchain/pull/198 is merged
+build:linux --extra_toolchains=@llvm_toolchain//:cc-toolchain-x86_64-linux
 
 common:ci --announce_rc
 common:ci --disk_cache=~/.cache/bazel-disk-cache
