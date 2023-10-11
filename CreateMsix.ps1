@@ -32,7 +32,6 @@ try {
 	}
 
 	Set-ItemProperty -Path .\dist\bin\ecsact.exe -Name IsReadOnly -Value $false
-	Set-ItemProperty -Path .\dist\bin\ecsact_rtb.exe -Name IsReadOnly -Value $false
 	Set-ItemProperty -Path .\dist\bin\ecsact_lsp_server.exe -Name IsReadOnly -Value $false
 
 	& $SignToolPath sign `
@@ -41,7 +40,6 @@ try {
 		/p $CertPasswordPlain `
 		/tr http://timestamp.sectigo.com /td SHA256 `
 		.\dist\bin\ecsact.exe `
-		.\dist\bin\ecsact_rtb.exe `
 		.\dist\bin\ecsact_lsp_server.exe
 
 	if(-not $?) {
@@ -49,7 +47,6 @@ try {
 	}
 
 	Set-ItemProperty -Path .\dist\bin\ecsact.exe -Name IsReadOnly -Value $true
-	Set-ItemProperty -Path .\dist\bin\ecsact_rtb.exe -Name IsReadOnly -Value $true
 	Set-ItemProperty -Path .\dist\bin\ecsact_lsp_server.exe -Name IsReadOnly -Value $true
 
 	& $MakeAppxPath pack /v /o /h SHA384 /d .\dist\ /p $MsixPath

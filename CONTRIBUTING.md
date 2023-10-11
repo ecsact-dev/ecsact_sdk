@@ -4,7 +4,7 @@ The Ecsact SDK repository doesn't contain very much source code, but is a great 
 
 ## Getting Started
 
-If you want to makes changes to another ecsact repository (such as [ecsact_rtb](https://github.com/ecsact-dev/ecsact_rtb)) you may want to install the SDK with your changes. To do that you use the `DevInstall` script with the repository you want to contribute to
+If you want to makes changes to another ecsact repository (such as [ecsact_cli](https://github.com/ecsact-dev/ecsact_cli)) you may want to install the SDK with your changes. To do that you use the `DevInstall` script with the repository you want to contribute to
 
 The Ecsact SDK is built with [`bazel`](https://bazel.build/). We recommend you install [bazelisk](https://bazel.build/install/bazelisk) and have it available as `bazel` in your `PATH`.
 
