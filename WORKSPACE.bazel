@@ -18,9 +18,9 @@ http_file(
 
 http_archive(
     name = "rules_7zip",
-    sha256 = "a1603959be68272506849a7ed91e7acd4c2b036a2df1b6d9112c7733a7d607db",
-    strip_prefix = "rules_7zip-b064ada4b7878bc83be680fa55fcb16c893f594f",
-    urls = ["https://github.com/zaucy/rules_7zip/archive/b064ada4b7878bc83be680fa55fcb16c893f594f.zip"],
+    sha256 = "89db47017a95de6fc30acd0ff0b70c25e468a21b5e1286940feb21505854f28b",
+    strip_prefix = "rules_7zip-9addcf58cdc5022fa5188b5f270bc0c9bb240f46",
+    urls = ["https://github.com/zaucy/rules_7zip/archive/9addcf58cdc5022fa5188b5f270bc0c9bb240f46.zip"],
 )
 
 load("@rules_7zip//:setup.bzl", "setup_7zip")
