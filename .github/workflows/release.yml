@@ -10,7 +10,7 @@ jobs:
   release-draft:
     runs-on: ubuntu-latest
     steps:
-      - uses: softprops/action-gh-release@v1
+      - uses: softprops/action-gh-release@v2
 
   common-dist:
     runs-on: ubuntu-latest
@@ -140,7 +140,7 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: linux-x64-archive
-      - uses: softprops/action-gh-release@v1
+      - uses: softprops/action-gh-release@v2
         with:
           fail_on_unmatched_files: true
           files: ecsact_sdk_${{github.ref_name}}_linux_x64.tar.gz
@@ -154,7 +154,7 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: amd64-deb-package
-      - uses: softprops/action-gh-release@v1
+      - uses: softprops/action-gh-release@v2
         with:
           fail_on_unmatched_files: true
           files: ecsact_sdk_${{github.ref_name}}_amd64.deb
@@ -168,7 +168,7 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: windows-x64-archive
-      - uses: softprops/action-gh-release@v1
+      - uses: softprops/action-gh-release@v2
         with:
           fail_on_unmatched_files: true
           files: ecsact_sdk_${{github.ref_name}}_windows_x64.zip
@@ -180,7 +180,7 @@ jobs:
       - release-upload-linux-x64-archive
       - release-upload-amd64-deb-package
     steps:
-      - uses: softprops/action-gh-release@v1
+      - uses: softprops/action-gh-release@v2
         with:
           name: ${{github.ref_name}}
           generate_release_notes: true
