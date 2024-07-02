@@ -12,7 +12,7 @@ bazel_dep(name = "ecsact_parse", version = "0.5.1")
 bazel_dep(name = "ecsact_runtime", version = "0.6.6")
 bazel_dep(name = "ecsact_interpret", version = "0.6.4")
 bazel_dep(name = "ecsact_lang_cpp", version = "0.4.5")
-bazel_dep(name = "ecsact_cli", version = "0.3.12")
+bazel_dep(name = "ecsact_cli", version = "0.3.13")
 bazel_dep(name = "ecsact_lsp_server", version = "0.2.1")
 bazel_dep(name = "ecsact_lang_json", version = "0.1.4")
 bazel_dep(name = "ecsact_lang_csharp", version = "0.1.4")
@@ -39,11 +39,6 @@ register_toolchains(
     "@llvm_toolchain//:all",
     "@ecsact_toolchain//:all",
     dev_dependency = True,
-)
-
-local_path_override(
-    module_name = "ecsact_cli",
-    path = "../ecsact_cli",
 )
 
 local_path_override(
