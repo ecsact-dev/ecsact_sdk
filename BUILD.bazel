@@ -1,6 +1,4 @@
-load(":pkg.bzl", "pkg_executable")
-load("@rules_pkg//pkg:tar.bzl", "pkg_tar")
-load("@bzlws//:index.bzl", "bzlws_copy", "bzlws_extract")
+load("@bzlws//:index.bzl", "bzlws_copy")
 
 bzlws_copy(
     name = "copy_dist_bin",
@@ -36,13 +34,12 @@ bzlws_copy(
 
 # keep sorted
 _plugins = [
-    "@ecsact_lang_cpp//cpp_header_codegen:ecsact_cpp_header_codegen_bin",
-    "@ecsact_lang_cpp//cpp_meta_header_codegen:ecsact_cpp_meta_header_codegen_bin",
-    "@ecsact_lang_cpp//cpp_systems_header_codegen:ecsact_cpp_systems_header_codegen_bin",
-    "@ecsact_lang_cpp//cpp_systems_source_codegen:ecsact_cpp_systems_source_codegen_bin",
-    "@ecsact_lang_cpp//systems_header_codegen:ecsact_systems_header_codegen_bin",
-    "@ecsact_lang_csharp//csharp_codegen:ecsact_csharp_codegen_bin",
-    "@ecsact_lang_json//json_codegen:ecsact_json_codegen_bin",
+    "@ecsact_lang_cpp//cpp_header_codegen:ecsact_cpp_header_codegen",
+    "@ecsact_lang_cpp//cpp_systems_header_codegen:ecsact_cpp_systems_header_codegen",
+    "@ecsact_lang_cpp//cpp_systems_source_codegen:ecsact_cpp_systems_source_codegen",
+    "@ecsact_lang_cpp//systems_header_codegen:ecsact_systems_header_codegen",
+    "@ecsact_lang_csharp//csharp_codegen:ecsact_csharp_codegen",
+    "@ecsact_lang_json//json_codegen:ecsact_json_codegen",
 ]
 
 bzlws_copy(
@@ -52,6 +49,15 @@ bzlws_copy(
         "@platforms//os:linux": _plugins + ["@ecsact_rust_codegen_linux//file"],
         "//conditions:default": _plugins,
     }),
-    out = "dist/share/ecsact/plugins/{BAZEL_LABEL_NAME}[:-4].{EXTNAME}",
+    out = "dist/share/ecsact/plugins/{BAZEL_LABEL_NAME}.{EXTNAME}",
+    force = True,
+)
+
+bzlws_copy(
+    name = "ecsact_rt_entt_recipe_bundle",
+    srcs = [
+        "@ecsact_rt_entt//:ecsact_rt_entt_recipe_bundle",
+    ],
+    out = "dist/share/ecsact/recipes/{FILENAME}",
     force = True,
 )

@@ -1,23 +1,60 @@
 module(name = "ecsact_sdk")
 
 bazel_dep(name = "rules_cc", version = "0.0.9")
-bazel_dep(name = "platforms", version = "0.0.7")
-bazel_dep(name = "rules_pkg", version = "0.9.1")
-bazel_dep(name = "bazel_skylib", version = "1.4.2")
-bazel_dep(name = "ecsact_si_wasm", version = "0.1.1")
-bazel_dep(name = "rules_ecsact", version = "0.4.5")
-bazel_dep(name = "ecsact_rt_entt", version = "0.2.2")
-bazel_dep(name = "ecsact_codegen", version = "0.1.3")
-bazel_dep(name = "ecsact_parse", version = "0.3.3")
-bazel_dep(name = "ecsact_runtime", version = "0.5.4")
-bazel_dep(name = "ecsact_interpret", version = "0.5.3")
-bazel_dep(name = "ecsact_lang_cpp", version = "0.3.1")
-bazel_dep(name = "ecsact_cli", version = "0.2.3")
-bazel_dep(name = "ecsact_lsp_server", version = "0.2.0")
-bazel_dep(name = "ecsact_lang_json", version = "0.1.2")
-bazel_dep(name = "ecsact_lang_csharp", version = "0.1.2")
+bazel_dep(name = "platforms", version = "0.0.10")
+bazel_dep(name = "rules_pkg", version = "0.10.1")
+bazel_dep(name = "bazel_skylib", version = "1.7.1")
+bazel_dep(name = "ecsact_si_wasm", version = "0.1.2")
+bazel_dep(name = "rules_ecsact", version = "0.5.2")
+bazel_dep(name = "ecsact_rt_entt", version = "0.3.3")
+bazel_dep(name = "ecsact_codegen", version = "0.3.1")
+bazel_dep(name = "ecsact_parse", version = "0.5.1")
+bazel_dep(name = "ecsact_runtime", version = "0.6.6")
+bazel_dep(name = "ecsact_interpret", version = "0.6.4")
+bazel_dep(name = "ecsact_lang_cpp", version = "0.4.5")
+bazel_dep(name = "ecsact_cli", version = "0.3.12")
+bazel_dep(name = "ecsact_lsp_server", version = "0.2.1")
+bazel_dep(name = "ecsact_lang_json", version = "0.1.4")
+bazel_dep(name = "ecsact_lang_csharp", version = "0.1.4")
 bazel_dep(name = "boost.dll", version = "1.83.0.bzl.2")
 bazel_dep(name = "boost.process", version = "1.83.0.bzl.2")
+
+bazel_dep(name = "toolchains_llvm", version = "1.0.0", dev_dependency = True)
+bazel_dep(name = "hedron_compile_commands", dev_dependency = True)
+git_override(
+    module_name = "hedron_compile_commands",
+    commit = "204aa593e002cbd177d30f11f54cff3559110bb9",
+    remote = "https://github.com/hedronvision/bazel-compile-commands-extractor.git",
+)
+
+ecsact = use_extension("@rules_ecsact//ecsact:extensions.bzl", "ecsact", dev_dependency = True)
+ecsact.toolchain(use_ecsact_cli = True)
+use_repo(ecsact, "ecsact_toolchain")
+
+llvm = use_extension("@toolchains_llvm//toolchain/extensions:llvm.bzl", "llvm", dev_dependency = True)
+llvm.toolchain(llvm_version = "17.0.6")
+use_repo(llvm, "llvm_toolchain")
+
+register_toolchains(
+    "@llvm_toolchain//:all",
+    "@ecsact_toolchain//:all",
+    dev_dependency = True,
+)
+
+local_path_override(
+    module_name = "ecsact_cli",
+    path = "../ecsact_cli",
+)
+
+local_path_override(
+    module_name = "rules_ecsact",
+    path = "../rules_ecsact",
+)
+
+local_path_override(
+    module_name = "ecsact_rt_entt",
+    path = "../ecsact_rt_entt",
+)
 
 # https://github.com/jbeder/yaml-cpp/issues/1229
 bazel_dep(name = "yaml-cpp")
@@ -30,6 +67,6 @@ git_override(
 bazel_dep(name = "bzlws")
 git_override(
     module_name = "bzlws",
-    commit = "b90ae6b38e351979cae2af355f55d2c68d997030",
+    commit = "b7b10a115da356ec23b0cf0c697919baa7b7301c",
     remote = "https://github.com/zaucy/bzlws",
 )
