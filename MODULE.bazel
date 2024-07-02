@@ -5,7 +5,7 @@ bazel_dep(name = "platforms", version = "0.0.10")
 bazel_dep(name = "rules_pkg", version = "0.10.1")
 bazel_dep(name = "bazel_skylib", version = "1.7.1")
 bazel_dep(name = "ecsact_si_wasm", version = "0.1.2")
-bazel_dep(name = "rules_ecsact", version = "0.5.2")
+bazel_dep(name = "rules_ecsact", version = "0.5.3")
 bazel_dep(name = "ecsact_rt_entt", version = "0.3.3")
 bazel_dep(name = "ecsact_codegen", version = "0.3.1")
 bazel_dep(name = "ecsact_parse", version = "0.5.1")
@@ -39,11 +39,6 @@ register_toolchains(
     "@llvm_toolchain//:all",
     "@ecsact_toolchain//:all",
     dev_dependency = True,
-)
-
-local_path_override(
-    module_name = "rules_ecsact",
-    path = "../rules_ecsact",
 )
 
 local_path_override(
