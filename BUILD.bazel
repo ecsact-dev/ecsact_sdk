@@ -1,4 +1,4 @@
-load("@bzlws//:index.bzl", "bzlws_copy")
+load("@bzlws//rules:bzlws_copy.bzl", "bzlws_copy")
 
 bzlws_copy(
     name = "copy_dist_bin",
