@@ -25,11 +25,6 @@ jobs:
       - run: bazel run --config=ci //:copy_dist_include
       - run: bazel run --config=ci //:copy_dist_images
       - run: bazel run --config=ci //:copy_runfiles
-      - run: rm -rf dist/bin/ecsact_rtb.runfiles/boost_mp11_files/.github
-      - run: rm -rf dist/bin/ecsact_rtb.runfiles/boost_mp11_files/doc
-      - run: rm -rf dist/bin/ecsact_rtb.runfiles/boost_mp11_files/meta
-      - run: rm -rf dist/bin/ecsact_rtb.runfiles/boost_mp11_files/tools
-      - run: rm -rf dist/bin/ecsact_rtb.runfiles/boost_mp11_files/test
       - uses: actions/upload-artifact@v4
         with:
           name: common-dist
@@ -82,7 +77,7 @@ jobs:
         with:
           name: linux-x64-binaries
       # https://github.com/actions/upload-artifact#permission-loss
-      - run: chmod +x bin/ecsact bin/ecsact_rtb bin/ecsact_lsp_server
+      - run: chmod +x bin/ecsact bin/ecsact_lsp_server
       - run: tar -czf ecsact_sdk_${{github.ref_name}}_linux_x64.tar.gz bin include share
       - uses: actions/upload-artifact@v4
         with:
@@ -103,7 +98,7 @@ jobs:
         with:
           name: linux-x64-binaries
       # https://github.com/actions/upload-artifact#permission-loss
-      - run: chmod +x bin/ecsact bin/ecsact_rtb bin/ecsact_lsp_server
+      - run: chmod +x bin/ecsact bin/ecsact_lsp_server
       - shell: pwsh
         run: ./CreateDeb.ps1 -Version ${{github.ref_name}}
       - uses: actions/upload-artifact@v4
@@ -124,7 +119,6 @@ jobs:
         with:
           name: windows-x64-binaries
       - run: >
-          mv bin/ecsact_rtb.runfiles bin/ecsact_rtb.exe.runfiles &&
           zip -r ecsact_sdk_${{github.ref_name}}_windows_x64.zip bin include share
       - uses: actions/upload-artifact@v4
         with:
