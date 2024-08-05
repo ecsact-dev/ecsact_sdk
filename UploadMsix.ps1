@@ -27,7 +27,7 @@ Expand-Archive -Path $ArchivePath -DestinationPath dist
 ((Get-Content -path .\ecsact_sdk.appinstaller -Raw) -replace '0.0.0-placeholder',"$($LatestTag)") | Set-Content -Path .\ecsact_sdk.appinstaller
 
 try {
-	bazel run --ui_event_filters=-info --noshow_progress //:copy_dist_images
+	bazel run --ui_event_filters=-info --noshow_progress //:copy_dist_images -c opt
 	. .\CreateMsix.ps1 -CertPath $CertPath -Version $LatestTag -CertPassword $CertPassword
 	gh release upload $LatestTag $MsixPath ecsact_sdk.appinstaller --clobber
 } finally {
