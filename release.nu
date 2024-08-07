@@ -37,7 +37,7 @@ def main [version: string] {
 
 	let release_notes = $release_notes | reduce {|$section, $full| $full + $section} -f "";
 
-	git commit -m $"chore(deps): ecsact repos for ($version) release";
+	git commit -m $"chore\(deps\): ecsact repos for ($version) release";
 	git push origin main;
 	git tag $version;
 	git push origin $version;
