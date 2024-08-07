@@ -36,7 +36,7 @@ def main [version: string] {
 	});
 
 	let release_notes = $release_notes | reduce {|$section, $full| $full + $section} -f "";
-
+	git add MODULE.bazel;
 	git commit -m $"chore\(deps\): ecsact repos for ($version) release";
 	git push origin main;
 	git tag $version;
