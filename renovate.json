@@ -2,5 +2,19 @@
 	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
 	"extends": [
 		"github>ecsact-dev/renovate-config"
+	],
+	"packageRules": [
+		{
+			// handled in release.nu
+			"automerge": false,
+			"groupName": "Ecsact Repositories",
+			"matchPackagePrefixes": [
+				"ecsact_",
+				"ecsact-",
+			],
+			"matchPackageNames": [
+				"rules_ecsact",
+			]
+		}
 	]
 }
