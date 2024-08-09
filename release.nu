@@ -13,6 +13,9 @@ def main [version: string] {
 	let changelog_template = [$start_dir, "release-notes-template"] | path join;
 
 	$before_update_deps | each {|dep| bzlmod add $dep.name; };
+	
+	# sanity check
+	bazel build //...;
 
 	let release_notes = (get-ecsact-deps | each {|dep| 
 		let before_version = $before_update_deps | where name == $dep.name | get version | get 0;
