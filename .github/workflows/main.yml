@@ -20,7 +20,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - run: sudo apt install blender python
+      - run: sudo apt-get install blender python -y
       - uses: actions/checkout@v4
       - run: bazel build --config=ci ...
   build-windows:
@@ -36,6 +36,6 @@ jobs:
   check-dist:
     runs-on: ubuntu-latest
     steps:
-      - run: sudo apt install blender python
+      - run: sudo apt-get install blender python -y
       - uses: actions/checkout@v4
       - run: ./CheckDist.sh
