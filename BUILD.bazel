@@ -13,9 +13,9 @@ bzlws_copy(
 bzlws_copy(
     name = "copy_dist_images",
     srcs = [
-        "@ecsact_logo//:ecsact-color",
-        "@ecsact_logo//:ecsact-color150",
-        "@ecsact_logo//:ecsact-color44",
+        "@ecsact_logo//:ecsact-color.png",
+        "@ecsact_logo//:ecsact-color150.png",
+        "@ecsact_logo//:ecsact-color44.png",
     ],
     out = "dist/images/{FILENAME}",
     force = True,

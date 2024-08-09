@@ -2,7 +2,7 @@
 
 param (
 	[Parameter(Mandatory)][SecureString] $CertPassword,
-	$CertPath = "$env:USERPROFILE\Documents\Certificates\EcsactDev.pfx"
+	$CertPath = [Environment]::GetFolderPath("MyDocuments") + "\Certificates\EcsactDev.pfx"
 )
 
 $ErrorActionPreference = 'Stop'
@@ -10,6 +10,9 @@ $ErrorActionPreference = 'Stop'
 $GitTag = git describe --tags --abbrev=0
 $GitTagSplit = $GitTag.Split(".")
 $IncrementedVersion = $GitTagSplit[0] + "." + $GitTagSplit[1] + "." + (([int]$GitTagSplit[2]) + 1)
+
+# Simulate a release to set the correct version
+$Env:GITHUB_REF=$IncrementedVersion
 
 . .\CopyDist.ps1
 

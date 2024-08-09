@@ -20,12 +20,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/cache@v4
-        with:
-          path: |
-            ~/.cache/bazelisk
-            ~/.cache/bazel-disk-cache
-          key: ${{runner.os}}-bazel-cache
       - uses: actions/checkout@v4
       - run: bazel build --config=ci ...
   build-windows:
@@ -33,22 +27,10 @@ jobs:
     steps:
       - name: bazel visual studio 17.6 workaround # https://github.com/bazelbuild/bazel/issues/18592
         run: Remove-Item -Path "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\vcpkg" -Force -Recurse
-      - uses: actions/cache@v4
-        with:
-          path: |
-            /Users/runneradmin/AppData/Local/bazelisk
-            /Users/runneradmin/.cache/bazel-disk-cache
-          key: ${{runner.os}}-bazel-cache
       - uses: actions/checkout@v4
       - run: bazel build --config=ci //...
   check-dist:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/cache@v4
-        with:
-          path: |
-            ~/.cache/bazelisk
-            ~/.cache/bazel-disk-cache
-          key: ${{runner.os}}-bazel-cache
       - uses: actions/checkout@v4
       - run: ./CheckDist.sh
