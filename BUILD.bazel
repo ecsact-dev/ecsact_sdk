@@ -45,8 +45,8 @@ _plugins = [
 bzlws_copy(
     name = "copy_dist_codegen_plugins",
     srcs = select({
-        "@platforms//os:windows": _plugins + ["@ecsact_rust_codegen_windows//file"],
-        "@platforms//os:linux": _plugins + ["@ecsact_rust_codegen_linux//file"],
+        "@platforms//os:windows": _plugins,
+        "@platforms//os:linux": _plugins,
         "//conditions:default": _plugins,
     }),
     out = "dist/share/ecsact/plugins/{BAZEL_LABEL_NAME}.{EXTNAME}",
