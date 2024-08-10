@@ -7,7 +7,7 @@ def get-ecsact-deps [] {
 	)
 }
 
-def main [version: string] {
+def main [version: string, --dry-run] {
 	let start_dir = $env.PWD;
 	let before_update_deps = get-ecsact-deps;
 	let changelog_template = [$start_dir, "release-notes-template"] | path join;
@@ -39,10 +39,15 @@ def main [version: string] {
 	});
 
 	let release_notes = $release_notes | reduce {|$section, $full| $full + $section} -f "";
-	git add MODULE.bazel;
-	git commit -m $"chore\(deps\): ecsact repos for ($version) release";
-	git push origin main;
-	git tag $version;
-	git push origin $version;
-	gh release create $version -n $release_notes --latest -t $version --verify-tag --latest;
+
+	if $dry {
+		echo $release_notes;
+	} else {
+		git add MODULE.bazel;
+		git commit -m $"chore\(deps\): ecsact repos for ($version) release";
+		git push origin main;
+		git tag $version;
+		git push origin $version;
+		gh release create $version -n $release_notes --latest -t $version --verify-tag --latest;
+	}
 }
