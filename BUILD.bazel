@@ -57,6 +57,8 @@ bzlws_copy(
     name = "copy_dist_recipe_bundles",
     srcs = [
         "@ecsact_rt_entt",
+        "@ecsact_rt_reference//async_reference",
+        "@ecsact_rt_reference//serialize_reference",
     ],
     out = "dist/share/ecsact/recipes/{FILENAME}",
     force = True,
