@@ -40,7 +40,7 @@ def main [version: string, --dry-run] {
 
 	let release_notes = $release_notes | reduce {|$section, $full| $full + $section} -f "";
 
-	if $dry {
+	if $dry_run {
 		echo $release_notes;
 	} else {
 		git add MODULE.bazel;
