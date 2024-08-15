@@ -13,10 +13,14 @@ $RunCopyTargets = @(
 git clean dist -fdx *> CopyDist.log
 
 Write-Progress -Status "Building copy targets..." -Activity "Copying distribution files"
-bazel build $RunCopyTargets *>> CopyDist.log
+bazel build $RunCopyTargets -k *>> CopyDist.log
 
 foreach($Target in $RunCopyTargets)
 {
 	Write-Progress -Status "$Target" -Activity "Copying distribution files"
 	bazel run --ui_event_filters=-info --noshow_progress $Target *>> CopyDist.log
+	if(-not $?)
+	{
+		throw "$Target failed. Check ./CopyDist.log for more details."
+	}
 }
