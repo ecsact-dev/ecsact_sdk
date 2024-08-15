@@ -24,13 +24,13 @@ try
 	Copy-Item ".\dist\images\ecsact-color44.png" ".\dist\images\ecsact-color44.targetsize-44_altform-unplated.png" -Force
 	Copy-Item ".\dist\images\ecsact-color150.png" ".\dist\images\ecsact-color150.targetsize-150_altform-unplated.png" -Force
 
-	& $MakePriPath createconfig /cf .\dist\priconfig.xml /dq en-US /o
+	& $MakePriPath createconfig /cf .\dist\priconfig.xml /dq en-US /o *>> CreateMsix.log
 	if(-not $?)
 	{
 		throw "$MakePriPath createconfig failed with exit code ${LastExitCode}"
 	}
 
-	& $MakePriPath new /pr .\dist /cf .\dist\priconfig.xml /dq en-US /o /OutputFile ".\dist\resources.pri" *>> CopyMsix.log
+	& $MakePriPath new /pr .\dist /cf .\dist\priconfig.xml /dq en-US /o /OutputFile ".\dist\resources.pri" *>> CreateMsix.log
 	if(-not $?)
 	{
 		throw "$MakePriPath new failed with exit code ${LastExitCode}"
