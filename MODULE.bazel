@@ -9,7 +9,7 @@ bazel_dep(name = "bazel_skylib", version = "1.7.1")
 # SEE: https://github.com/bazelbuild/bazel/issues/22972
 bazel_dep(name = "ecsact_si_wasm", version = "0.1.11")
 bazel_dep(name = "rules_ecsact", version = "0.5.8")
-bazel_dep(name = "ecsact_rt_entt", version = "0.3.17")
+bazel_dep(name = "ecsact_rt_entt", version = "0.3.18")
 bazel_dep(name = "ecsact_rt_reference", version = "0.2.0")
 git_override(
     module_name = "ecsact_rt_reference",
