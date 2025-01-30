@@ -7,9 +7,9 @@ bazel_dep(name = "bazel_skylib", version = "1.7.1")
 
 # NOTE: this si the first ecsact dependency and if you see a bazel 'compatibility' error it may _NOT_ be from this one and could be from many others.
 # SEE: https://github.com/bazelbuild/bazel/issues/22972
-bazel_dep(name = "ecsact_si_wasm", version = "0.1.10")
+bazel_dep(name = "ecsact_si_wasm", version = "0.1.11")
 bazel_dep(name = "rules_ecsact", version = "0.5.8")
-bazel_dep(name = "ecsact_rt_entt", version = "0.3.16")
+bazel_dep(name = "ecsact_rt_entt", version = "0.3.17")
 
 # TODO: add ecsact_runtime 0.8.0 support
 # bazel_dep(name = "ecsact_rt_reference", version = "0.1.2")

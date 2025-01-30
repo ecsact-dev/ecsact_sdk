@@ -27,6 +27,7 @@ bzlws_copy(
         "@ecsact_codegen//:headers",
         "@ecsact_lang_cpp//:headers",
         "@ecsact_runtime//:headers",
+        "@ecsact_si_wasm//:headers",
     ],
     out = "dist/include/{FILEPATH}",
     force = True,
