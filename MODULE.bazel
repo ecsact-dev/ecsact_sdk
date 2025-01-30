@@ -10,9 +10,13 @@ bazel_dep(name = "bazel_skylib", version = "1.7.1")
 bazel_dep(name = "ecsact_si_wasm", version = "0.1.11")
 bazel_dep(name = "rules_ecsact", version = "0.5.8")
 bazel_dep(name = "ecsact_rt_entt", version = "0.3.17")
+bazel_dep(name = "ecsact_rt_reference", version = "0.2.0")
+git_override(
+    module_name = "ecsact_rt_reference",
+    commit = "01d3a9026ae7515a9fbfa9076d4d485d8aab0ea0",
+    remote = "git@github.com:ecsact-dev/ecsact_rt_reference.git",
+)
 
-# TODO: add ecsact_runtime 0.8.0 support
-# bazel_dep(name = "ecsact_rt_reference", version = "0.1.2")
 bazel_dep(name = "ecsact_codegen", version = "0.4.4")
 bazel_dep(name = "ecsact_parse", version = "0.5.5")
 bazel_dep(name = "ecsact_runtime", version = "0.8.0")
@@ -30,6 +34,9 @@ bazel_dep(name = "ecsact_logo", version = "0.1.11")
 
 bazel_dep(name = "toolchains_llvm", version = "1.2.0", dev_dependency = True)
 bazel_dep(name = "hedron_compile_commands", dev_dependency = True)
+
+bazel_dep(name = "docopt.cpp", version = "0.6.2")
+
 git_override(
     module_name = "hedron_compile_commands",
     commit = "204aa593e002cbd177d30f11f54cff3559110bb9",
