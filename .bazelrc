@@ -4,6 +4,7 @@ common --registry=https://raw.githubusercontent.com/ecsact-dev/bazel_registry/ma
 common --registry=https://raw.githubusercontent.com/zaucy/bazel-central-registry/add-curl-config2 # temporary
 common --registry=https://raw.githubusercontent.com/bazelboost/registry/main
 common --registry=https://bcr.bazel.build
+common --@docopt.cpp//:use_boost_regex
 build --enable_platform_specific_config
 build --incompatible_enable_cc_toolchain_resolution
 build --incompatible_strict_action_env

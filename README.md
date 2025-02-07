@@ -24,4 +24,4 @@ Here are some core repositories that are most interesting if you're considering 
 * https://github.com/ecsact-dev/ecsact_interpret
 * https://github.com/ecsact-dev/ecsact_cli
 * https://github.com/ecsact-dev/ecsact_rt_entt
-* https://github.com/ecsact-dev/ecsact_si_wasm
+* https://github.com/ecsact-dev/ecsact_si_wasmer

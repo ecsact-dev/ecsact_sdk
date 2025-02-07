@@ -15,5 +15,6 @@ echo
 [ ! -d "dist/include/ecsact" ] && echo "Missing ecsact include directory" && exit 1
 [ ! -f "dist/bin/ecsact" ] && echo "Missing ecsact CLI" && exit 1
 [ ! -f "dist/bin/ecsact_lsp_server" ] && echo "Missing ecsact lsp CLI" && exit 1
+[ ! -f "dist/bin/EcsactUnrealCodegen" ] && echo "Missing EcsatUnrealCodegen tool" && exit 1
 
 exit 0

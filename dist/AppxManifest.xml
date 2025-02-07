@@ -36,6 +36,17 @@
 			</Extensions>
 		</Application>
 
+		<Application Id="EcsactSdk.EcsactUnrealCodegen" Executable="bin/EcsactUnrealCodegen.exe" EntryPoint="Windows.FullTrustApplication">
+			<uap3:VisualElements DisplayName="Ecsact Unreal Codegen" Description="Tool for executing ecsact codegen on Unreal projects" BackgroundColor="transparent" Square44x44Logo="images/ecsact-color44.png" Square150x150Logo="images/ecsact-color150.png" AppListEntry="none" VisualGroup="Ecsact" />
+			<Extensions>
+				<uap3:Extension Category="windows.appExecutionAlias">
+					<uap3:AppExecutionAlias>
+						<uap8:ExecutionAlias Alias="EcsactUnrealCodegen.exe" />
+					</uap3:AppExecutionAlias>
+				</uap3:Extension>
+			</Extensions>
+		</Application>
+
 	</Applications>
 	<Capabilities>
 		<rescap:Capability Name="runFullTrust" />
