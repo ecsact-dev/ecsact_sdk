@@ -5,7 +5,14 @@ bzlws_copy(
     srcs = [
         "@ecsact_cli",
         "@ecsact_lsp_server",
-    ],
+    ] + select({
+        "@platforms//os:windows": [
+            "@ecsact_unreal_codegen_win64//file",
+        ],
+        "@platforms//os:linux": [
+            "@ecsact_unreal_codegen_linux//file",
+        ],
+    }),
     out = "dist/bin/{FILENAME}",
     force = True,
 )

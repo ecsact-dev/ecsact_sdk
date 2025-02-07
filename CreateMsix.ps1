@@ -38,7 +38,8 @@ try
 
 	$ExecutablesToSign = @(
 		'.\dist\bin\ecsact.exe',
-		'.\dist\bin\ecsact_lsp_server.exe'
+		'.\dist\bin\ecsact_lsp_server.exe',
+		'.\dist\bin\EcsactUnrealCodegen.exe'
 	)
 
 	foreach($Executable in $ExecutablesToSign)

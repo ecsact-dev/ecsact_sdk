@@ -26,6 +26,24 @@ bazel_dep(name = "boost.process", version = "1.83.0.bzl.2")
 bazel_dep(name = "bzlws", version = "0.2.0")
 bazel_dep(name = "ecsact_logo", version = "0.1.11")
 
+prebuilt_tools = use_extension("//:prebuilt-tools.bzl", "prebuilt_tools")
+use_repo(
+    prebuilt_tools,
+    "ecsact_unreal_codegen_linux",
+    "ecsact_unreal_codegen_win64",
+)
+
+# local_path_override(
+#     module_name = "ecsact_unreal_codegen",
+#     path = "../ecsact_unreal/Tools/EcsactUnrealCodegen",
+# )
+# git_override(
+#     module_name = "ecsact_unreal_codegen",
+#     commit = "1a2c65d45a9a697bbbe61c643ff7926ad28243be",
+#     remote = "git@github.com:ecsact-dev/ecsact_unreal.git",
+#     strip_prefix = "Tools/EcsactUnrealCodegen",
+# )
+
 bazel_dep(name = "toolchains_llvm", version = "1.2.0", dev_dependency = True)
 bazel_dep(name = "hedron_compile_commands", dev_dependency = True)
 
