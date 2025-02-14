@@ -7,18 +7,31 @@ def get-ecsact-deps [] {
 	)
 }
 
-def main [version: string, --dry-run] {
+def main [version, --dry-run, --update] {
 	let start_dir = $env.PWD;
+	let tmp_repo_dir = mktemp -d --suffix "EcsactSdkRelease";
+	let last_release = (gh release view --json tagName | from json).tagName;
+	git worktree add $tmp_repo_dir $last_release;
+	cd $tmp_repo_dir;
 	let before_update_deps = get-ecsact-deps;
+	git worktree remove $tmp_repo_dir --force | complete; # this sometimes fails
+	cd $start_dir;
 	let changelog_template = [$start_dir, "release-notes-template"] | path join;
-
-	$before_update_deps | each {|dep| bzlmod add $dep.name; };
+	
+	if $update {
+		$before_update_deps | each {|dep| bzlmod add $dep.name; };
+	}
 	
 	# sanity check
-	bazel build //...;
+	bazel build "//...";
 
 	let release_notes = (get-ecsact-deps | each {|dep| 
-		let before_version = $before_update_deps | where name == $dep.name | get version | get 0;
+		print $"Generating release notes for ($dep.name)";
+		let before_version = ($before_update_deps | where name == $dep.name);
+		if ($before_version | length) == 0 {
+			return $"## NEW dependency ($dep.name)\n\n";
+		}
+		let before_version = $before_version | get version | get 0;
 		let after_version = $dep | get version;
 		let dep_repo_remote = $"https://github.com/ecsact-dev/($dep.name)";
 		let cached_repo_dir = $".cache/repos/($dep.name)";
