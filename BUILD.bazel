@@ -5,7 +5,14 @@ bzlws_copy(
     srcs = [
         "@ecsact_cli",
         "@ecsact_lsp_server",
-    ],
+    ] + select({
+        "@platforms//os:windows": [
+            "@ecsact_unreal_codegen_win64//file",
+        ],
+        "@platforms//os:linux": [
+            "@ecsact_unreal_codegen_linux//file",
+        ],
+    }),
     out = "dist/bin/{FILENAME}",
     force = True,
 )
@@ -24,9 +31,9 @@ bzlws_copy(
 bzlws_copy(
     name = "copy_dist_include",
     srcs = [
+        "@ecsact_codegen//:headers",
         "@ecsact_lang_cpp//:headers",
         "@ecsact_runtime//:headers",
-        "@ecsact_codegen//:headers",
     ],
     out = "dist/include/{FILEPATH}",
     force = True,
@@ -60,6 +67,7 @@ bzlws_copy(
         "@ecsact_rt_entt",
         "@ecsact_rt_reference//async_reference",
         "@ecsact_rt_reference//serialize_reference",
+        "@ecsact_si_wasmer",
     ],
     out = "dist/share/ecsact/recipes/{FILENAME}",
     force = True,

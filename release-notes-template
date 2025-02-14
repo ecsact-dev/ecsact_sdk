@@ -8,28 +8,34 @@
     ## Unreleased ({{ from_shorthand ~ ".." ~ to_shorthand }})
 {% endif -%}
 
-{% for type, typed_commits in commits | sort(attribute="type")| group_by(attribute="type")-%}
-#### {{ type | upper_first }}
+{% for type, typed_commits in commits | sort(attribute="type") | group_by(attribute="type") -%}
+    {% if type != "Miscellaneous Chores" -%}
+        #### {{ type | upper_first }}
+    {% endif -%}
 {% for scope, scoped_commits in typed_commits | group_by(attribute="scope") -%}
 
 {% for commit in scoped_commits | sort(attribute="scope") -%}
-    {% set shorthand = commit.id | truncate(length=7, end="") -%}
-    - **({{ scope }})** {{ commit.summary }} - ([{{ shorthand }}]({{ repository_url }}/commit/{{ commit.id }}))
-      {{ commit.body }}
+    {% if commit.type != "Miscellaneous Chores" -%}
+        {% set shorthand = commit.id | truncate(length=7, end="") -%}
+        - **({{ scope }})** {{ commit.summary }} - ([{{ shorthand }}]({{ repository_url }}/commit/{{ commit.id }}))
+          {{ commit.body }}
+    {% endif -%}
 {% endfor -%}
 
 {% endfor -%}
 
 {%- for commit in typed_commits | unscoped -%}
-    {% if commit.author -%}
-        {% set author = commit.author -%}
-    {% else -%}
-        {% set author = commit.signature -%}
-    {% endif -%}
+    {% if commit.type != "Miscellaneous Chores" -%}
+        {% if commit.author -%}
+            {% set author = commit.author -%}
+        {% else -%}
+            {% set author = commit.signature -%}
+        {% endif -%}
 
-    {% set shorthand = commit.id | truncate(length=7, end="") -%}
-    - {{ commit.summary }} - ([{{ shorthand }}]({{ repository_url }}/commit/{{ commit.id }}))
-      {{ commit.body }}
+        {% set shorthand = commit.id | truncate(length=7, end="") -%}
+        - {{ commit.summary }} - ([{{ shorthand }}]({{ repository_url }}/commit/{{ commit.id }}))
+          {{ commit.body }}
+    {% endif -%}
 {% endfor -%}
 
 {% endfor -%}
