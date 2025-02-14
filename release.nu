@@ -56,9 +56,11 @@ def main [version, --dry-run, --update] {
 	if $dry_run {
 		echo $release_notes;
 	} else {
-		git add MODULE.bazel;
-		git commit -m $"chore\(deps\): ecsact repos for ($version) release";
-		git push origin main;
+		if $update {
+			git add MODULE.bazel;
+			git commit -m $"chore\(deps\): ecsact repos for ($version) release";
+			git push origin main;
+		}
 		git tag $version;
 		git push origin $version;
 		gh release create $version -n $release_notes --latest -t $version --verify-tag --latest;
